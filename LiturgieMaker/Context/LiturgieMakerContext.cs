@@ -12,8 +12,8 @@ namespace LiturgieMakerAPI.LiturgieMaker.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // LiturgieItems
-            builder.Entity<Schriftlezing>();
-            builder.Entity<Lied>();
+            builder.Entity<SchriftlezingItem>();
+            builder.Entity<LiedItem>();
 
             base.OnModelCreating(builder);
         }

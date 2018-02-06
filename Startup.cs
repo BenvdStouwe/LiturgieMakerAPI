@@ -16,17 +16,25 @@ namespace LiturgieMakerAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            CurrentEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
+        private IHostingEnvironment CurrentEnvironment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureLiturgieMaker(services);
+
+            if (CurrentEnvironment.IsDevelopment())
+            {
+
+            }
+
             services.AddMvc()
                 .AddJsonOptions(
                     options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -42,6 +50,11 @@ namespace LiturgieMakerAPI
             }
 
             app.UseMvc();
+        }
+
+        public void ConfigureLiedBundels(IServiceCollection services)
+        {
+
         }
 
         public void ConfigureLiturgieMaker(IServiceCollection services)

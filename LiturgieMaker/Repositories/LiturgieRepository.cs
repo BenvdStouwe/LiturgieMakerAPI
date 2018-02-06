@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LiturgieMakerAPI.LiedBundels.Model;
 using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Model;
 using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
@@ -25,18 +26,20 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
                 };
 
                 var items = new List<LiturgieItem> {
-                    new Lied {
+                    new LiedItem {
                         Index = 0,
-                        Liturgie = liturgie
+                        Liturgie = liturgie,
+                        Lied = new Lied { AantalVerzen = 20, Naam = "Test lied" }
                     },
-                    new Schriftlezing {
+                    new SchriftlezingItem {
                         Index = 1,
                         Liturgie = liturgie,
                         Hoofdstuk = 5
                     },
-                    new Lied {
+                    new LiedItem {
                         Index = 2,
-                        Liturgie = liturgie
+                        Liturgie = liturgie,
+                        Lied = new Lied { AantalVerzen = 20, Naam = "Nog een test lied" }
                     }
                 };
 
@@ -47,9 +50,9 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
             }
         }
 
-        public Liturgie GetLiturgie(int id)
+        public Liturgie GetLiturgie(long id)
         {
-            return _context.Liturgieen.FirstOrDefault(l => l.LiturgieId == id);
+            return _context.Liturgieen.FirstOrDefault(l => l.Id == id);
         }
 
         public IEnumerable<Liturgie> GetLiturgieen()

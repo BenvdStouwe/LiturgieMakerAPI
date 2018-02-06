@@ -23,7 +23,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult Get(long id)
         {
             var liturgie = _liturgieRepository.GetLiturgie(id);
 
