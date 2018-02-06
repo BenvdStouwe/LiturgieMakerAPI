@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiturgieMakerAPI.LiturgieMaker.Context;
+using LiturgieMakerAPI.LiturgieMaker.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,8 @@ namespace LiturgieMakerAPI
 
         public void ConfigureLiturgieMaker(IServiceCollection services)
         {
-            services.AddDbContext<LiturgieContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+            services.AddDbContext<LiturgieMakerContext>(opt => opt.UseInMemoryDatabase("Liturgie"));
+            services.AddScoped<LiturgieRepository>();
         }
     }
 }

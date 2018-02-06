@@ -3,9 +3,9 @@ using LiturgieMakerAPI.LiturgieMaker.Model;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Context
 {
-    public class LiturgieContext : DbContext
+    public class LiturgieMakerContext : DbContext
     {
-        public LiturgieContext(DbContextOptions<LiturgieContext> options)
+        public LiturgieMakerContext(DbContextOptions<LiturgieMakerContext> options)
             : base(options) { }
 
         public DbSet<Liturgie> Liturgieen { get; set; }

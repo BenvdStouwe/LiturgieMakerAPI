@@ -8,9 +8,9 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
 {
     public class LiturgieRepository
     {
-        private readonly LiturgieContext _context;
+        private readonly LiturgieMakerContext _context;
 
-        public LiturgieRepository(LiturgieContext context)
+        public LiturgieRepository(LiturgieMakerContext context)
         {
             _context = context;
 
@@ -19,10 +19,12 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
                 var liturige = new Liturgie
                 {
                     Titel = "Test liturgie",
-                    Aanvangsdatum = new DateTime()
+                    Aanvangsdatum = DateTime.Now,
+                    Publicatiedatum = DateTime.Now
                 };
 
-                _context.Add(liturige);
+                _context.Liturgieen.Add(liturige);
+                _context.SaveChanges();
             }
         }
 
@@ -33,7 +35,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
 
         public IEnumerable<Liturgie> GetLiturgieen()
         {
-            return _context.Liturgieen;
+            return _context.Liturgieen.ToList();
         }
     }
 }

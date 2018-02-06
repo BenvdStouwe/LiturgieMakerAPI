@@ -18,7 +18,8 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_liturgieRepository.GetLiturgieen());
+            var liturgieen = _liturgieRepository.GetLiturgieen();
+            return Ok(liturgieen);
         }
 
         [HttpGet("{id}")]
