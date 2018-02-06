@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LiturgieMakerAPI.Data;
 using LiturgieMakerAPI.LiedBundels.Context;
 using LiturgieMakerAPI.LiedBundels.Repositories;
 using LiturgieMakerAPI.LiturgieMaker.Context;
@@ -35,10 +36,24 @@ namespace LiturgieMakerAPI
 
             if (CurrentEnvironment.IsDevelopment())
             {
-
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("AllowAll", builder =>
+                        {
+                            builder
+                                .AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
+                        });
+                });
+            }
+            else
+            {
+                // TODO Cors voor prod
+                services.AddCors();
             }
 
-            services.AddCors();
             services.AddMvc()
                 .AddJsonOptions(
                     options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -51,6 +66,14 @@ namespace LiturgieMakerAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                // Setup testdata
+                using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+                {
+                    var liedBundelsContext = serviceScope.ServiceProvider.GetRequiredService<LiedBundelsContext>();
+                    var liturgieMakerContext = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
+                    LiedBundelInitializer.Initialize(liedBundelsContext);
+                    LiturgieMakerInitializer.Initialize(liturgieMakerContext, liedBundelsContext);
+                }
             }
 
             app.UseMvc();

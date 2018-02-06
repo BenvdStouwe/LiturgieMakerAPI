@@ -7,7 +7,7 @@ namespace LiturgieMakerAPI.LiedBundels.Model
     {
         public int Id { get; set; }
         public string Naam { get; set; }
-        public int AantalLiederen => Liederen.Count();
+        public int AantalLiederen { get; set; }
         public IEnumerable<Lied> Liederen { get; set; }
     }
 }

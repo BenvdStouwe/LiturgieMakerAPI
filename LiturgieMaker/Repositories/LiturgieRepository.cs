@@ -15,39 +15,6 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         public LiturgieRepository(LiturgieMakerContext context)
         {
             _context = context;
-
-            if (!_context.Liturgieen.Any())
-            {
-                var liturgie = new Liturgie
-                {
-                    Titel = "Test liturgie",
-                    Aanvangsdatum = DateTime.Now,
-                    Publicatiedatum = DateTime.Now
-                };
-
-                var items = new List<LiturgieItem> {
-                    new LiedItem {
-                        Index = 0,
-                        Liturgie = liturgie,
-                        Lied = new Lied { Naam = "Test lied" }
-                    },
-                    new SchriftlezingItem {
-                        Index = 1,
-                        Liturgie = liturgie,
-                        Hoofdstuk = 5
-                    },
-                    new LiedItem {
-                        Index = 2,
-                        Liturgie = liturgie,
-                        Lied = new Lied { Naam = "Nog een test lied" }
-                    }
-                };
-
-                liturgie.Items = items;
-
-                _context.Liturgieen.Add(liturgie);
-                _context.SaveChanges();
-            }
         }
 
         public Liturgie GetLiturgie(long id)
