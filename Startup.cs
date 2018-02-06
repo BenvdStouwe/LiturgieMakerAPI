@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LiturgieMakerAPI.LiedBundels.Context;
+using LiturgieMakerAPI.LiedBundels.Repositories;
 using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -28,6 +30,7 @@ namespace LiturgieMakerAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConfigureLiedBundels(services);
             ConfigureLiturgieMaker(services);
 
             if (CurrentEnvironment.IsDevelopment())
@@ -35,6 +38,7 @@ namespace LiturgieMakerAPI
 
             }
 
+            services.AddCors();
             services.AddMvc()
                 .AddJsonOptions(
                     options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -54,7 +58,8 @@ namespace LiturgieMakerAPI
 
         public void ConfigureLiedBundels(IServiceCollection services)
         {
-
+            services.AddDbContext<LiedBundelsContext>(opt => opt.UseInMemoryDatabase("Liturgie"));
+            services.AddScoped<LiedBundelRepository>();
         }
 
         public void ConfigureLiturgieMaker(IServiceCollection services)

@@ -29,7 +29,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
                     new LiedItem {
                         Index = 0,
                         Liturgie = liturgie,
-                        Lied = new Lied { AantalVerzen = 20, Naam = "Test lied" }
+                        Lied = new Lied { Naam = "Test lied" }
                     },
                     new SchriftlezingItem {
                         Index = 1,
@@ -39,7 +39,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
                     new LiedItem {
                         Index = 2,
                         Liturgie = liturgie,
-                        Lied = new Lied { AantalVerzen = 20, Naam = "Nog een test lied" }
+                        Lied = new Lied { Naam = "Nog een test lied" }
                     }
                 };
 
@@ -52,7 +52,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
 
         public Liturgie GetLiturgie(long id)
         {
-            return _context.Liturgieen.FirstOrDefault(l => l.Id == id);
+            return _context.Liturgieen.SingleOrDefault(l => l.Id == id);
         }
 
         public IEnumerable<Liturgie> GetLiturgieen()
