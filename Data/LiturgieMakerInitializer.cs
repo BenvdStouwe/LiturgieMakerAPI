@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LiturgieMakerAPI.Common.Utils;
 using LiturgieMakerAPI.LiedBundels.Context;
 using LiturgieMakerAPI.LiedBundels.Model;
 using LiturgieMakerAPI.LiturgieMaker.Context;
@@ -50,6 +51,14 @@ namespace LiturgieMakerAPI.Data
             };
 
             liturgie.Items = items;
+
+            var liturgie2 = new Liturgie
+            {
+                Titel = "Nog een test liturgie",
+                Aanvangsdatum = DateTime.Now,
+                Publicatiedatum = DateTime.Now.AddDays(2)
+            };
+            liturgieMakerContext.Add(liturgie2);
 
             liturgieMakerContext.Liturgieen.Add(liturgie);
             liturgieMakerContext.SaveChanges();

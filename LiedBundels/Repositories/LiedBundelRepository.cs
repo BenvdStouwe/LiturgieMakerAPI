@@ -3,6 +3,7 @@ using System.Linq;
 using LiturgieMakerAPI.Data;
 using LiturgieMakerAPI.LiedBundels.Context;
 using LiturgieMakerAPI.LiedBundels.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace LiturgieMakerAPI.LiedBundels.Repositories
 {
@@ -21,12 +22,14 @@ namespace LiturgieMakerAPI.LiedBundels.Repositories
 
         public LiedBundel GetLiedBundel(string naam)
         {
-            return _context.LiedBundels.FirstOrDefault(lb => lb.Naam == naam);
+            return _context.LiedBundels
+                .FirstOrDefault(lb => lb.Naam == naam);
         }
 
         public IEnumerable<LiedBundel> GetLiedbundels()
         {
-            return _context.LiedBundels.ToList();
+            return _context.LiedBundels
+                .ToList();
         }
     }
 }

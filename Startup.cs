@@ -19,6 +19,7 @@ namespace LiturgieMakerAPI
 {
     public class Startup
     {
+        private readonly string LITURGIEMAKERDBNAME = "Liturgie";
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
@@ -81,13 +82,13 @@ namespace LiturgieMakerAPI
 
         public void ConfigureLiedBundels(IServiceCollection services)
         {
-            services.AddDbContext<LiedBundelsContext>(opt => opt.UseInMemoryDatabase("Liturgie"));
+            services.AddDbContext<LiedBundelsContext>(opt => opt.UseInMemoryDatabase(LITURGIEMAKERDBNAME));
             services.AddScoped<LiedBundelRepository>();
         }
 
         public void ConfigureLiturgieMaker(IServiceCollection services)
         {
-            services.AddDbContext<LiturgieMakerContext>(opt => opt.UseInMemoryDatabase("Liturgie"));
+            services.AddDbContext<LiturgieMakerContext>(opt => opt.UseInMemoryDatabase(LITURGIEMAKERDBNAME));
             services.AddScoped<LiturgieRepository>();
         }
     }
