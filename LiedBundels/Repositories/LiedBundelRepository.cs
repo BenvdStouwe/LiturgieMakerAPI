@@ -1,37 +1,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using LiturgieMakerAPI.Data;
-using LiturgieMakerAPI.LiedBundels.Context;
-using LiturgieMakerAPI.LiedBundels.Model;
+using LiturgieMakerAPI.Liedbundels.Context;
+using LiturgieMakerAPI.Liedbundels.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace LiturgieMakerAPI.LiedBundels.Repositories
+namespace LiturgieMakerAPI.Liedbundels.Repositories
 {
-    public class LiedBundelRepository
+    public class LiedbundelRepository
     {
-        private readonly LiedBundelsContext _context;
-        public LiedBundelRepository(LiedBundelsContext context)
+        private readonly LiedbundelsContext _context;
+        public LiedbundelRepository(LiedbundelsContext context)
         {
             _context = context;
         }
 
-        public LiedBundel GetLiedBundel(long id)
+        public Liedbundel GetLiedbundel(long id)
         {
-            return _context.LiedBundels
+            return _context.Liedbundels
                 .Include(lb => lb.Liederen)
                 .SingleOrDefault(lb => lb.Id == id);
         }
 
-        public LiedBundel GetLiedBundel(string naam)
+        public IEnumerable<Liedbundel> GetLiedbundels()
         {
-            return _context.LiedBundels
-                .Include(lb => lb.Liederen)
-                .FirstOrDefault(lb => lb.Naam == naam);
-        }
-
-        public IEnumerable<LiedBundel> GetLiedBundels()
-        {
-            return _context.LiedBundels
+            return _context.Liedbundels
                 .ToList();
         }
     }

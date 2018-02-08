@@ -1,4 +1,4 @@
-using LiturgieMakerAPI.LiedBundels.Model;
+using LiturgieMakerAPI.Liedbundels.Model;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems
 {

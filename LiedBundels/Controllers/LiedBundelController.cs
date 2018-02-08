@@ -1,14 +1,14 @@
-using LiturgieMakerAPI.LiedBundels.Repositories;
+using LiturgieMakerAPI.Liedbundels.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LiturgieMakerAPI.LiedBundels.Controllers
+namespace LiturgieMakerAPI.Liedbundels.Controllers
 {
     [Route("api/[controller]")]
-    public class LiedBundelController : Controller
+    public class LiedbundelController : Controller
     {
-        private readonly LiedBundelRepository _repository;
+        private readonly LiedbundelRepository _repository;
 
-        public LiedBundelController(LiedBundelRepository repository)
+        public LiedbundelController(LiedbundelRepository repository)
         {
             _repository = repository;
         }
@@ -16,17 +16,22 @@ namespace LiturgieMakerAPI.LiedBundels.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var liedBundels = _repository.GetLiedBundels();
+            var liedbundels = _repository.GetLiedbundels();
 
-            return Ok(liedBundels);
+            return Ok(liedbundels);
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var liedBundel = _repository.GetLiedBundel(id);
+            var liedbundel = _repository.GetLiedbundel(id);
 
-            return Ok(liedBundel);
+            if (liedbundel == null)
+            {
+                return NotFound("Liedbundel niet gevonden");
+            }
+
+            return Ok(liedbundel);
         }
     }
 }

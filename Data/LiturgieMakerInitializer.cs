@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LiturgieMakerAPI.LiedBundels.Context;
-using LiturgieMakerAPI.LiedBundels.Model;
+using LiturgieMakerAPI.Liedbundels.Context;
+using LiturgieMakerAPI.Liedbundels.Model;
 using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Model;
 using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
@@ -11,7 +11,7 @@ namespace LiturgieMakerAPI.Data
 {
     public static class LiturgieMakerInitializer
     {
-        public static void Initialize(LiturgieMakerContext liturgieMakerContext, LiedBundelsContext liedBundelsContext, bool truncate = false)
+        public static void Initialize(LiturgieMakerContext liturgieMakerContext, LiedbundelsContext liedbundelsContext, bool truncate = false)
         {
             if (liturgieMakerContext.Liturgieen.Any())
             {
@@ -32,8 +32,8 @@ namespace LiturgieMakerAPI.Data
                 Publicatiedatum = DateTime.Now
             };
 
-            var psalmboek = liedBundelsContext.LiedBundels.FirstOrDefault(lb => lb.Naam == "Psalm");
-            var opwekking = liedBundelsContext.LiedBundels.FirstOrDefault(lb => lb.Naam == "Opwekking");
+            var psalmboek = liedbundelsContext.Liedbundels.FirstOrDefault(lb => lb.Naam == "Psalm");
+            var opwekking = liedbundelsContext.Liedbundels.FirstOrDefault(lb => lb.Naam == "Opwekking");
 
             var item1 = new LiedItem
             {

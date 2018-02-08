@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LiturgieMakerAPI.Data;
-using LiturgieMakerAPI.LiedBundels.Context;
-using LiturgieMakerAPI.LiedBundels.Repositories;
+using LiturgieMakerAPI.Liedbundels.Context;
+using LiturgieMakerAPI.Liedbundels.Repositories;
 using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -39,7 +39,7 @@ namespace LiturgieMakerAPI
                 c.SwaggerDoc("v1", new Info { Title = "LiturgieMaker API", Version = "v1" });
             });
 
-            ConfigureLiedBundels(services);
+            ConfigureLiedbundels(services);
             ConfigureLiturgieMaker(services);
 
             if (CurrentEnvironment.IsDevelopment())
@@ -77,10 +77,10 @@ namespace LiturgieMakerAPI
                 // Setup testdata
                 using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
                 {
-                    var liedBundelsContext = serviceScope.ServiceProvider.GetRequiredService<LiedBundelsContext>();
+                    var liedbundelsContext = serviceScope.ServiceProvider.GetRequiredService<LiedbundelsContext>();
                     var liturgieMakerContext = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
-                    LiedBundelInitializer.Initialize(liedBundelsContext);
-                    LiturgieMakerInitializer.Initialize(liturgieMakerContext, liedBundelsContext);
+                    LiedbundelInitializer.Initialize(liedbundelsContext);
+                    LiturgieMakerInitializer.Initialize(liturgieMakerContext, liedbundelsContext);
                 }
             }
 
@@ -90,10 +90,10 @@ namespace LiturgieMakerAPI
             app.UseMvc();
         }
 
-        public void ConfigureLiedBundels(IServiceCollection services)
+        public void ConfigureLiedbundels(IServiceCollection services)
         {
-            services.AddDbContext<LiedBundelsContext>(opt => opt.UseInMemoryDatabase(LITURGIEMAKERDBNAME));
-            services.AddScoped<LiedBundelRepository>();
+            services.AddDbContext<LiedbundelsContext>(opt => opt.UseInMemoryDatabase(LITURGIEMAKERDBNAME));
+            services.AddScoped<LiedbundelRepository>();
         }
 
         public void ConfigureLiturgieMaker(IServiceCollection services)
