@@ -7,11 +7,18 @@ namespace LiturgieMakerAPI.Data
 {
     public static class LiedBundelInitializer
     {
-        public static void Initialize(LiedBundelsContext context)
+        public static void Initialize(LiedBundelsContext context, bool truncate = false)
         {
             if (context.LiedBundels.Any())
             {
-                return;
+                if (truncate)
+                {
+                    context.LiedBundels.ToList().ForEach(lb => context.Remove(lb));
+                }
+                else
+                {
+                    return;
+                }
             }
 
             var psalmboek = new LiedBundel
@@ -32,6 +39,7 @@ namespace LiturgieMakerAPI.Data
             var lied = new Lied
             {
                 Naam = "Juich aarde",
+                AantalVerzen = 4,
                 LiedNummer = 100,
                 LiedBundel = psalmboek
             };

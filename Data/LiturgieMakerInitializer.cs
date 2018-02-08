@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LiturgieMakerAPI.Common.Utils;
 using LiturgieMakerAPI.LiedBundels.Context;
 using LiturgieMakerAPI.LiedBundels.Model;
 using LiturgieMakerAPI.LiturgieMaker.Context;
@@ -12,11 +11,18 @@ namespace LiturgieMakerAPI.Data
 {
     public static class LiturgieMakerInitializer
     {
-        public static void Initialize(LiturgieMakerContext liturgieMakerContext, LiedBundelsContext liedBundelsContext)
+        public static void Initialize(LiturgieMakerContext liturgieMakerContext, LiedBundelsContext liedBundelsContext, bool truncate = false)
         {
             if (liturgieMakerContext.Liturgieen.Any())
             {
-                return;
+                if (truncate)
+                {
+                    liturgieMakerContext.Liturgieen.ToList().ForEach(l => liturgieMakerContext.Remove(l));
+                }
+                else
+                {
+                    return;
+                }
             }
 
             var liturgie = new Liturgie
