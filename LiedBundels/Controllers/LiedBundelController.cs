@@ -1,3 +1,4 @@
+using System.Linq;
 using LiturgieMakerAPI.Liedbundels.Model;
 using LiturgieMakerAPI.Liedbundels.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,10 @@ namespace LiturgieMakerAPI.Liedbundels.Controllers
         /// <summary>
         /// Alle liedbundels ophalen
         /// </summary>
+        /// <remarks>
+        /// Haalt de liederen zelf niet op
+        /// </remarks>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -25,7 +30,14 @@ namespace LiturgieMakerAPI.Liedbundels.Controllers
             return Ok(liedbundels);
         }
 
+        /// <summary>
+        /// Een enkel liedbundel ophalen
+        /// </summary>
+        /// <param name="id">Uniek ID</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Liedbundel), 200)]
+        [ProducesResponseType(typeof(string), 404)]
         public IActionResult Get(int id)
         {
             var liedbundel = _repository.GetLiedbundel(id);
@@ -38,17 +50,25 @@ namespace LiturgieMakerAPI.Liedbundels.Controllers
             return Ok(liedbundel);
         }
 
-        [HttpGet("{naam}")]
-        public IActionResult Get(string naam)
+        /// <summary>
+        /// Zoeken naar liedbundel
+        /// </summary>
+        /// <remarks>
+        /// Case-insensitive
+        /// </remarks>
+        /// <param name="zoekTerm">Naam van liedbundel</param>
+        /// <returns></returns>
+        [HttpGet("search/{zoekTerm}")]
+        public IActionResult Get(string zoekTerm)
         {
-            var liedbundel = _repository.GetLiedbundel(naam);
+            var liedbundels = _repository.SearchLiedbundel(zoekTerm);
 
-            if (liedbundel == null)
+            if (!liedbundels.Any())
             {
-                return NotFound("Liedbundel niet gevonden");
+                return NotFound("Geen liedbundel gevonden");
             }
 
-            return Ok(liedbundel);
+            return Ok(liedbundels);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using LiturgieMakerAPI.Data;
@@ -22,11 +23,11 @@ namespace LiturgieMakerAPI.Liedbundels.Repositories
                 .SingleOrDefault(lb => lb.Id == id);
         }
 
-        public Liedbundel GetLiedbundel(string naam)
+        public IEnumerable<Liedbundel> SearchLiedbundel(string naam)
         {
             return _context.Liedbundels
-                .Include(lb => lb.Liederen)
-                .SingleOrDefault(lb => lb.Naam == naam);
+                .Where(lb => lb.Naam.IndexOf(naam, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
         }
 
         public IEnumerable<Liedbundel> GetLiedbundels()

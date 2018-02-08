@@ -4,7 +4,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems
 {
     public class LiedItem : LiturgieItem
     {
-        public override string Soort => "Lied";
+        public override LiturgieItemSoort Soort => LiturgieItemSoort.LIED;
         public int LiedNummer { get; set; }
         public Lied Lied { get; set; }
     }
