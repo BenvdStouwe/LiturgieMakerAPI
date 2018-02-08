@@ -16,9 +16,17 @@ namespace LiturgieMakerAPI.LiedBundels.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var liedBundels = _repository.GetLiedbundels();
+            var liedBundels = _repository.GetLiedBundels();
 
             return Ok(liedBundels);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var liedBundel = _repository.GetLiedBundel(id);
+
+            return Ok(liedBundel);
         }
     }
 }

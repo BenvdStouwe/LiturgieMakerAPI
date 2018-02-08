@@ -17,16 +17,19 @@ namespace LiturgieMakerAPI.LiedBundels.Repositories
 
         public LiedBundel GetLiedBundel(long id)
         {
-            return _context.LiedBundels.SingleOrDefault(lb => lb.Id == id);
+            return _context.LiedBundels
+                .Include(lb => lb.Liederen)
+                .SingleOrDefault(lb => lb.Id == id);
         }
 
         public LiedBundel GetLiedBundel(string naam)
         {
             return _context.LiedBundels
+                .Include(lb => lb.Liederen)
                 .FirstOrDefault(lb => lb.Naam == naam);
         }
 
-        public IEnumerable<LiedBundel> GetLiedbundels()
+        public IEnumerable<LiedBundel> GetLiedBundels()
         {
             return _context.LiedBundels
                 .ToList();
