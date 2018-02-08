@@ -22,6 +22,13 @@ namespace LiturgieMakerAPI.Liedbundels.Repositories
                 .SingleOrDefault(lb => lb.Id == id);
         }
 
+        public Liedbundel GetLiedbundel(string naam)
+        {
+            return _context.Liedbundels
+                .Include(lb => lb.Liederen)
+                .SingleOrDefault(lb => lb.Naam == naam);
+        }
+
         public IEnumerable<Liedbundel> GetLiedbundels()
         {
             return _context.Liedbundels

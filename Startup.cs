@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LiturgieMakerAPI.Data;
@@ -36,11 +37,12 @@ namespace LiturgieMakerAPI
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "LiturgieMaker API", Version = "v1" });
+                c.SwaggerDoc("LiturgieMaker", new Info { Title = "LiturgieMaker API" });
+                // Set the comments path for the Swagger JSON and UI.
+                var basePath = AppContext.BaseDirectory;
+                var xmlPath = Path.Combine(basePath, "LiturgieMakerAPI.xml");
+                c.IncludeXmlComments(xmlPath);
             });
-
-            ConfigureLiedbundels(services);
-            ConfigureLiturgieMaker(services);
 
             if (CurrentEnvironment.IsDevelopment())
             {
@@ -61,6 +63,9 @@ namespace LiturgieMakerAPI
                 // TODO Cors voor prod
                 services.AddCors();
             }
+
+            ConfigureLiedbundels(services);
+            ConfigureLiturgieMaker(services);
 
             services.AddMvc()
                 .AddJsonOptions(
@@ -83,9 +88,8 @@ namespace LiturgieMakerAPI
                     LiturgieMakerInitializer.Initialize(liturgieMakerContext, liedbundelsContext);
                 }
             }
-
             app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("v1/swagger.json", "LiturgieMaker API"); c.RoutePrefix = "api/swagger"; });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("LiturgieMaker/swagger.json", "LiturgieMaker API"); c.RoutePrefix = "api/swagger"; });
 
             app.UseMvc();
         }

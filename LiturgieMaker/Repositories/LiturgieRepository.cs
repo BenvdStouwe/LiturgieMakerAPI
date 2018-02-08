@@ -21,6 +21,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         public Liturgie GetLiturgie(long id)
         {
             return _context.Liturgieen
+                .Include(l => l.Items)
                 .SingleOrDefault(l => l.Id == id);
         }
 
