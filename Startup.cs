@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace LiturgieMakerAPI
 {
@@ -32,6 +33,12 @@ namespace LiturgieMakerAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Register the Swagger generator, defining one or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "LiturgieMaker API", Version = "v1" });
+            });
+
             ConfigureLiedBundels(services);
             ConfigureLiturgieMaker(services);
 
@@ -76,6 +83,9 @@ namespace LiturgieMakerAPI
                     LiturgieMakerInitializer.Initialize(liturgieMakerContext, liedBundelsContext);
                 }
             }
+
+            app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("v1/swagger.json", "LiturgieMaker API"); c.RoutePrefix = "api/swagger"; });
 
             app.UseMvc();
         }
