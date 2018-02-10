@@ -10,6 +10,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
         public string Titel { get; set; }
         public DateTime Aanvangsdatum { get; set; }
         public DateTime Publicatiedatum { get; set; }
+        public int AantalItems { get; set; }
         public IEnumerable<LiturgieItem> Items { get; set; }
 
         public void AddItem(LiturgieItem item)

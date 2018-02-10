@@ -1,32 +1,39 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using LiturgieMakerAPI.Data;
-using LiturgieMakerAPI.LiedBundels.Context;
-using LiturgieMakerAPI.LiedBundels.Model;
+using LiturgieMakerAPI.Liedbundels.Context;
+using LiturgieMakerAPI.Liedbundels.Model;
+using Microsoft.EntityFrameworkCore;
 
-namespace LiturgieMakerAPI.LiedBundels.Repositories
+namespace LiturgieMakerAPI.Liedbundels.Repositories
 {
-    public class LiedBundelRepository
+    public class LiedbundelRepository
     {
-        private readonly LiedBundelsContext _context;
-        public LiedBundelRepository(LiedBundelsContext context)
+        private readonly LiedbundelsContext _context;
+        public LiedbundelRepository(LiedbundelsContext context)
         {
             _context = context;
         }
 
-        public LiedBundel GetLiedBundel(long id)
+        public Liedbundel GetLiedbundel(long id)
         {
-            return _context.LiedBundels.SingleOrDefault(lb => lb.Id == id);
+            return _context.Liedbundels
+                .Include(lb => lb.Liederen)
+                .SingleOrDefault(lb => lb.Id == id);
         }
 
-        public LiedBundel GetLiedBundel(string naam)
+        public IEnumerable<Liedbundel> SearchLiedbundel(string naam)
         {
-            return _context.LiedBundels.FirstOrDefault(lb => lb.Naam == naam);
+            return _context.Liedbundels
+                .Where(lb => lb.Naam.IndexOf(naam, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
         }
 
-        public IEnumerable<LiedBundel> GetLiedbundels()
+        public IEnumerable<Liedbundel> GetLiedbundels()
         {
-            return _context.LiedBundels.ToList();
+            return _context.Liedbundels
+                .ToList();
         }
     }
 }

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LiturgieMakerAPI.LiedBundels.Model
+namespace LiturgieMakerAPI.Liedbundels.Model
 {
-    public class LiedBundel
+    public class Liedbundel
     {
         public int Id { get; set; }
         public string Naam { get; set; }

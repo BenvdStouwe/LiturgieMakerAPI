@@ -1,26 +1,33 @@
 using System.Collections.Generic;
 using System.Linq;
-using LiturgieMakerAPI.LiedBundels.Context;
-using LiturgieMakerAPI.LiedBundels.Model;
+using LiturgieMakerAPI.Liedbundels.Context;
+using LiturgieMakerAPI.Liedbundels.Model;
 
 namespace LiturgieMakerAPI.Data
 {
-    public static class LiedBundelInitializer
+    public static class LiedbundelInitializer
     {
-        public static void Initialize(LiedBundelsContext context)
+        public static void Initialize(LiedbundelsContext context, bool truncate = false)
         {
-            if (context.LiedBundels.Any())
+            if (context.Liedbundels.Any())
             {
-                return;
+                if (truncate)
+                {
+                    context.Liedbundels.ToList().ForEach(lb => context.Remove(lb));
+                }
+                else
+                {
+                    return;
+                }
             }
 
-            var psalmboek = new LiedBundel
+            var psalmboek = new Liedbundel
             {
                 Naam = "Psalm",
                 AantalLiederen = 150,
                 Liederen = new List<Lied>()
             };
-            var opwekking = new LiedBundel
+            var opwekking = new Liedbundel
             {
                 Naam = "Opwekking",
                 AantalLiederen = 795,
@@ -32,8 +39,9 @@ namespace LiturgieMakerAPI.Data
             var lied = new Lied
             {
                 Naam = "Juich aarde",
+                AantalVerzen = 4,
                 LiedNummer = 100,
-                LiedBundel = psalmboek
+                Liedbundel = psalmboek
             };
             context.Add(lied);
 

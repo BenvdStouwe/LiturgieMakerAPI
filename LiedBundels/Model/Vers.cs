@@ -1,4 +1,4 @@
-namespace LiturgieMakerAPI.LiedBundels.Model
+namespace LiturgieMakerAPI.Liedbundels.Model
 {
     public class Vers
     {

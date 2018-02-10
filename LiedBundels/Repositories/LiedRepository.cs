@@ -1,7 +1,7 @@
-namespace LiturgieMakerAPI.LiedBundels.Repositories
+namespace LiturgieMakerAPI.Liedbundels.Repositories
 {
     public class LiedRepository
     {
-        
+
     }
 }

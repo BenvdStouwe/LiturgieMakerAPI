@@ -1,14 +1,14 @@
-using LiturgieMakerAPI.LiedBundels.Model;
+using LiturgieMakerAPI.Liedbundels.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace LiturgieMakerAPI.LiedBundels.Context
+namespace LiturgieMakerAPI.Liedbundels.Context
 {
-    public class LiedBundelsContext : DbContext
+    public class LiedbundelsContext : DbContext
     {
-        public LiedBundelsContext(DbContextOptions<LiedBundelsContext> options)
+        public LiedbundelsContext(DbContextOptions<LiedbundelsContext> options)
             : base(options) { }
 
-        public DbSet<LiedBundel> LiedBundels { get; set; }
+        public DbSet<Liedbundel> Liedbundels { get; set; }
         public DbSet<Lied> Liederen { get; set; }
     }
 }

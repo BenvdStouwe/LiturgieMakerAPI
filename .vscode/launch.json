@@ -17,10 +17,10 @@
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
                 "enabled": true,
-                "args": "${auto-detect-url}/api/liturgie",
+                "args": "${auto-detect-url}/api/swagger",
                 "windows": {
                     "command": "cmd.exe",
-                    "args": "/C start ${auto-detect-url}/api/liturgie"
+                    "args": "/C start ${auto-detect-url}/api/swagger"
                 },
                 "osx": {
                     "command": "open"
