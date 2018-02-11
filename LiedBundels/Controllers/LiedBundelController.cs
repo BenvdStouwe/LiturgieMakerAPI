@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using LiturgieMakerAPI.Liedbundels.Model;
 using LiturgieMakerAPI.Liedbundels.Repositories;
@@ -23,6 +24,7 @@ namespace LiturgieMakerAPI.Liedbundels.Controllers
         /// </remarks>
         /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(typeof(Liedbundel[]), 200)]
         public IActionResult Get()
         {
             var liedbundels = _repository.GetLiedbundels();
@@ -58,14 +60,16 @@ namespace LiturgieMakerAPI.Liedbundels.Controllers
         /// </remarks>
         /// <param name="zoekTerm">Naam van liedbundel</param>
         /// <returns></returns>
-        [HttpGet("search/{zoekTerm}")]
-        public IActionResult Get(string zoekTerm)
+        [HttpGet("[action]/{zoekTerm}")]
+        [ProducesResponseType(typeof(Liedbundel[]), 200)]
+        [ProducesResponseType(204)]
+        public IActionResult Search(string zoekTerm)
         {
             var liedbundels = _repository.SearchLiedbundel(zoekTerm);
 
             if (!liedbundels.Any())
             {
-                return NotFound("Geen liedbundel gevonden");
+                return NoContent();
             }
 
             return Ok(liedbundels);

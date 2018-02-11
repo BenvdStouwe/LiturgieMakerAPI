@@ -30,5 +30,12 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
             return _context.Liturgieen
                 .ToList();
         }
+
+        public Liturgie SaveLiturgie(Liturgie liturgie)
+        {
+            _context.Add(liturgie);
+            _context.SaveChanges();
+            return liturgie;
+        }
     }
 }
