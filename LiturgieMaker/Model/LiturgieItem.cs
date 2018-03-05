@@ -5,7 +5,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
 {
     public abstract class LiturgieItem
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int Index { get; set; }
         public Liturgie Liturgie { get; set; }
         public virtual LiturgieItemSoort Soort { get; }

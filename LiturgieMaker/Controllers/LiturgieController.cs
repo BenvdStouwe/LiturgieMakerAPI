@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using AutoMapper;
 using LiturgieMakerAPI.LiturgieMaker.Model;
 using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
 using LiturgieMakerAPI.LiturgieMaker.Repositories;
@@ -12,12 +13,19 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
     [Route("api/[controller]")]
     public class LiturgieController : Controller
     {
-        public static readonly string ERROR_GEEN_VALIDE_LITURGIEITEMSOORT = "Eén of meer van de opgestuurde liturgie items had een onbekend type.";
-        private LiturgieRepository _liturgieRepository;
+        private const string ERROR_GEVULD_ID_BIJ_POST = "Je probeerde een bestaande liturgie als nieuw op te sturen.";
+        private const string ERROR_GEEN_VALIDE_LITURGIEITEMSOORT = "Eén of meer van de opgestuurde liturgie items had een onbekend type.";
+        private const string ERROR_GEEN_TITEL = "Er is geen titel ingevuld.";
+        private const string ERROR_GEEN_AANVANGSDATUM = "Er is geen aavangsdatum ingevuld.";
+        private const string ERROR_GEEN_PUBLICATIEDATUM = "Er is geen publicatiedatum ingevuld.";
 
-        public LiturgieController(LiturgieRepository liturgieRepository)
+        private readonly LiturgieRepository _liturgieRepository;
+        private readonly IMapper _mapper;
+
+        public LiturgieController(LiturgieRepository liturgieRepository, IMapper mapper)
         {
             _liturgieRepository = liturgieRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -32,7 +40,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         public IActionResult Get()
         {
             var liturgieen = _liturgieRepository.GetLiturgieen();
-            return Ok(liturgieen.Select(l => new LiturgieDto(l)));
+            return Ok(liturgieen.Select(l => _mapper.Map<LiturgieDto>(l)));
         }
 
         /// <summary>
@@ -56,102 +64,80 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
                 return NotFound("Deze liturgie bestaat niet.");
             }
 
-            return Ok(new LiturgieDto(liturgie));
+            return Ok(_mapper.Map<LiturgieDto>(liturgie));
         }
 
         /// <summary>
         /// Maak een nieuwe liturgie aan
         /// </summary>
         /// <param name="liturgieDto"></param>
-        /// <returns>Liturgie</returns>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(LiturgieDto), 201)]
-        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string[]), 400)]
         public IActionResult Post([FromForm]LiturgieDto liturgieDto)
         {
-            var liturgie = FromDto(liturgieDto);
-
-            if (liturgieDto.Items != null && liturgie.Items.Count(i => i != null) != liturgieDto.Items.Count())
+            if (!ValideerLiturgie(liturgieDto, out var errors))
             {
-                return BadRequest(ERROR_GEEN_VALIDE_LITURGIEITEMSOORT);
+                return BadRequest(errors);
             }
 
+            var liturgie = _mapper.Map<Liturgie>(liturgieDto);
             _liturgieRepository.SaveLiturgie(liturgie);
-            return CreatedAtAction("Get", new { id = liturgie.Id }, new LiturgieDto(liturgie));
+            return CreatedAtAction("Get", new { id = liturgie.Id }, _mapper.Map<LiturgieDto>(liturgie));
         }
 
-        private Liturgie FromDto(LiturgieDto liturgieDto)
+        private bool ValideerLiturgie(LiturgieDto dto, out IList<string> errors)
         {
-            var liturgie = new Liturgie
-            {
-                Titel = liturgieDto.Titel,
-                Aanvangsdatum = liturgieDto.Aanvangsdatum,
-                Publicatiedatum = liturgieDto.Publicatiedatum,
-                Items = liturgieDto.Items?.Select(FromDto) ?? null
-            };
+            errors = new List<string>();
 
-            return liturgie;
-        }
-
-        private LiturgieItem FromDto(LiturgieItemDto itemDto)
-        {
-            if (!Enum.IsDefined(typeof(LiturgieItemSoort), itemDto.Soort))
+            if (dto.Id != null)
             {
-                return null;
+                errors.Add(ERROR_GEVULD_ID_BIJ_POST);
             }
 
-            switch ((LiturgieItemSoort)itemDto.Soort)
+            if (dto.Titel == null)
             {
-                case (LiturgieItemSoort.LIED):
-                    return new LiedItem();
-                case (LiturgieItemSoort.SCHRIFTLEZING):
-                    return new SchriftlezingItem();
-                default:
-                    return null;
+                errors.Add(ERROR_GEEN_TITEL);
             }
-        }
 
-        public class LiturgieDto
-        {
-            public long? Id { get; set; }
-            [Required]
-            public string Titel { get; set; }
-            [Required]
-            public DateTime Aanvangsdatum { get; set; }
-            [Required]
-            public DateTime Publicatiedatum { get; set; }
-            public int? AantalItems { get; set; }
-            public IEnumerable<LiturgieItemDto> Items { get; set; }
-
-            public LiturgieDto() { }
-
-            public LiturgieDto(Liturgie liturgie)
+            if (dto.Aanvangsdatum == null)
             {
-                Id = liturgie.Id;
-                Titel = liturgie.Titel;
-                Aanvangsdatum = liturgie.Aanvangsdatum;
-                Publicatiedatum = liturgie.Publicatiedatum;
-                AantalItems = liturgie.AantalItems;
-                Items = liturgie.Items?.Select(i => new LiturgieItemDto(i)) ?? new List<LiturgieItemDto>();
+                errors.Add(ERROR_GEEN_AANVANGSDATUM);
             }
-        }
 
-        public class LiturgieItemDto
-        {
-            public long? Id { get; set; }
-            [Required]
-            public int Index { get; set; }
-            [Required]
-            public int Soort { get; set; }
-
-            public LiturgieItemDto() { }
-
-            public LiturgieItemDto(LiturgieItem item)
+            if (dto.Publicatiedatum == null)
             {
-                Id = item.Id;
-                Index = item.Index;
-                Soort = (int)item.Soort;
+                errors.Add(ERROR_GEEN_PUBLICATIEDATUM);
             }
+
+            if (dto.Items != null && dto.Items.Any(i => !Enum.IsDefined(typeof(LiturgieItemSoort), i.Soort)))
+            {
+                errors.Add(ERROR_GEEN_VALIDE_LITURGIEITEMSOORT);
+            }
+
+            return !errors.Any();
         }
+    }
+
+    public class LiturgieDto
+    {
+        public long? Id { get; set; }
+        [Required]
+        public string Titel { get; set; }
+        [Required]
+        public DateTime Aanvangsdatum { get; set; }
+        [Required]
+        public DateTime Publicatiedatum { get; set; }
+        public IEnumerable<LiturgieItemDto> Items { get; set; }
+    }
+
+    public class LiturgieItemDto
+    {
+        public long? Id { get; set; }
+        [Required]
+        public int Index { get; set; }
+        [Required]
+        public int Soort { get; set; }
     }
 }

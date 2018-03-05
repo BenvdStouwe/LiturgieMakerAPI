@@ -66,7 +66,7 @@ namespace LiturgieMakerAPI.Data
             };
             liturgieMakerContext.Add(liturgie2);
 
-            liturgieMakerContext.Liturgieen.Add(liturgie);
+            liturgieMakerContext.Add(liturgie);
             liturgieMakerContext.SaveChanges();
         }
     }
