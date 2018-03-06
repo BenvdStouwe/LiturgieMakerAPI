@@ -5,7 +5,7 @@ using LiturgieMakerAPI.Liedbundels.Model;
 
 namespace LiturgieMakerAPI.Data
 {
-    public static class LiedbundelInitializer
+    internal static class LiedbundelInitializer
     {
         public static void Initialize(LiedbundelsContext context, bool truncate = false)
         {

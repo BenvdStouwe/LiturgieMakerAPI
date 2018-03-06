@@ -9,7 +9,7 @@ using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
 
 namespace LiturgieMakerAPI.Data
 {
-    public static class LiturgieMakerInitializer
+    internal static class LiturgieMakerInitializer
     {
         public static void Initialize(LiturgieMakerContext liturgieMakerContext, LiedbundelsContext liedbundelsContext, bool truncate = false)
         {
