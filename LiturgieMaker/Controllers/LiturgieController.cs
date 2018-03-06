@@ -7,6 +7,8 @@ using LiturgieMakerAPI.LiturgieMaker.Model;
 using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
 using LiturgieMakerAPI.LiturgieMaker.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Controllers
 {
@@ -138,6 +140,8 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         [Required]
         public int Index { get; set; }
         [Required]
-        public int Soort { get; set; }
+        [EnumDataType(typeof(LiturgieItemSoort))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LiturgieItemSoort Soort { get; set; }
     }
 }
