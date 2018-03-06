@@ -5,15 +5,22 @@ using LiturgieMakerAPI.Liedbundels.Model;
 
 namespace LiturgieMakerAPI.Data
 {
-    internal static class LiedbundelInitializer
+    internal class LiedbundelInitializer
     {
-        public static void Initialize(LiedbundelsContext context, bool truncate = false)
+        private readonly LiedbundelsContext _context;
+
+        public LiedbundelInitializer(LiedbundelsContext context)
         {
-            if (context.Liedbundels.Any())
+            _context = context;
+        }
+
+        public void Initialize(bool truncate = false)
+        {
+            if (_context.Liedbundels.Any())
             {
                 if (truncate)
                 {
-                    context.Liedbundels.ToList().ForEach(lb => context.Remove(lb));
+                    _context.Liedbundels.ToList().ForEach(lb => _context.Remove(lb));
                 }
                 else
                 {
@@ -21,79 +28,60 @@ namespace LiturgieMakerAPI.Data
                 }
             }
 
-            var psalmboek = new Liedbundel
-            {
-                Naam = "Psalm",
-                AantalLiederen = 150,
-                Liederen = new List<Lied>()
-            };
-            var opwekking = new Liedbundel
-            {
-                Naam = "Opwekking",
-                AantalLiederen = 795,
-                Liederen = new List<Lied>()
-            };
-            context.Add(psalmboek);
-            context.Add(opwekking);
+            var psalmboek = NieuweLiedbundel("Psalm", 150);
+            var opwekking = NieuweLiedbundel("Opwekking", 795);
 
-            var lied = new Lied
-            {
-                Naam = "Juich aarde",
-                AantalVerzen = 4,
-                LiedNummer = 100,
-                Liedbundel = psalmboek
-            };
-            context.Add(lied);
+            var lied = NieuwLied("Juich aarde", 4, 100, psalmboek);
 
-            var vers1 = new Vers
-            {
-                VersNummer = 1,
-                Lied = lied,
-                Tekst = @"Juich, aarde, juich alom den HEER;
+            var vers1 = NieuwVers(1, lied, @"Juich, aarde, juich alom den HEER;
 Dient God met blijdschap, geeft Hem eer;
 Komt, nadert voor Zijn aangezicht;
-Zingt Hem een vrolijk lofgedicht."
-            };
-            var vers2 = new Vers
-            {
-                VersNummer = 2,
-                Lied = lied,
-                Tekst = @"De HEER is God; erkent, dat Hij
+Zingt Hem een vrolijk lofgedicht.");
+            var vers2 = NieuwVers(2, lied, @"De HEER is God; erkent, dat Hij
 Ons heeft gemaakt (en geenszins wij)
 Tot schapen, die Hij voedt en weidt;
-Een volk, tot Zijnen dienst bereid."
-            };
-            var vers3 = new Vers
-            {
-                VersNummer = 3,
-                Lied = lied,
-                Tekst = @"Gaat tot Zijn poorten in met lof,
+Een volk, tot Zijnen dienst bereid.");
+            var vers3 = NieuwVers(3, lied, @"Gaat tot Zijn poorten in met lof,
 Met lofzang in Zijn heilig hof;
 Looft Hem aldaar met hart en stem;
-Prijst Zijnen naam, verheerlijkt Hem."
-            };
-            var vers4 = new Vers
-            {
-                VersNummer = 4,
-                Lied = lied,
-                Tekst = @"Want goedertieren is de HEER;
+Prijst Zijnen naam, verheerlijkt Hem.");
+            var vers4 = NieuwVers(4, lied, @"Want goedertieren is de HEER;
 Zijn goedheid eindigt nimmermeer;
 Zijn trouw en waarheid houdt haar kracht
-Tot in het laatste nageslacht."
-            };
-            context.Add(vers1);
-            context.Add(vers2);
-            context.Add(vers3);
-            context.Add(vers4);
-            var verzen = new List<Vers>
+Tot in het laatste nageslacht.");
+
+            _context.SaveChanges();
+        }
+
+        private Liedbundel NieuweLiedbundel(string naam, int aantalLiederen)
+        {
+            return _context.Add(new Liedbundel
             {
-                vers1, vers2, vers3, vers4
-            };
-            lied.Verzen = verzen;
+                Naam = naam,
+                AantalLiederen = aantalLiederen,
+                Liederen = new List<Lied>()
+            }).Entity;
+        }
 
-            psalmboek.Liederen.Append(lied);
+        private Lied NieuwLied(string naam, int aantalVerzen, int liednummer, Liedbundel liedbundel)
+        {
+            return _context.Add(new Lied
+            {
+                Naam = naam,
+                AantalVerzen = aantalVerzen,
+                LiedNummer = liednummer,
+                Liedbundel = liedbundel
+            }).Entity;
+        }
 
-            context.SaveChanges();
+        private Vers NieuwVers(int versNummer, Lied lied, string tekst)
+        {
+            return _context.Add(new Vers
+            {
+                VersNummer = versNummer,
+                Lied = lied,
+                Tekst = tekst
+            }).Entity;
         }
     }
 }

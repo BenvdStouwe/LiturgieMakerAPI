@@ -85,7 +85,7 @@ namespace LiturgieMakerAPI
                 {
                     var liedbundelsContext = serviceScope.ServiceProvider.GetRequiredService<LiedbundelsContext>();
                     var liturgieMakerContext = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
-                    LiedbundelInitializer.Initialize(liedbundelsContext);
+                    new LiedbundelInitializer(liedbundelsContext).Initialize();
                     LiturgieMakerInitializer.Initialize(liturgieMakerContext, liedbundelsContext);
                 }
             }
