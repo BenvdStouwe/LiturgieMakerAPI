@@ -8,4 +8,10 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems
         public int LiedNummer { get; set; }
         public Lied Lied { get; set; }
     }
+
+    public class LiedItemDto : LiturgieItemDto
+    {
+        public int LiedNummer { get; set; }
+        public Lied Lied { get; set; }
+    }
 }

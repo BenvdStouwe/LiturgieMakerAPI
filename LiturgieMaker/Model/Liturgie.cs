@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Model
@@ -24,5 +25,17 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
                 AddItem(item);
             }
         }
+    }
+
+    public class LiturgieDto
+    {
+        public long? Id { get; set; }
+        [Required]
+        public string Titel { get; set; }
+        [Required]
+        public DateTime Aanvangsdatum { get; set; }
+        [Required]
+        public DateTime Publicatiedatum { get; set; }
+        public IEnumerable<LiturgieItemDto> Items { get; set; }
     }
 }

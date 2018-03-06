@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Model
 {
@@ -9,6 +10,16 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
         public int Index { get; set; }
         public Liturgie Liturgie { get; set; }
         public virtual LiturgieItemSoort Soort { get; }
+    }
+
+    public abstract class LiturgieItemDto
+    {
+        public long? Id { get; set; }
+        [Required]
+        public int Index { get; set; }
+        [Required]
+        [EnumDataType(typeof(LiturgieItemSoort))]
+        public LiturgieItemSoort Soort { get; set; }
     }
 
     public enum LiturgieItemSoort

@@ -72,19 +72,19 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// <summary>
         /// Maak een nieuwe liturgie aan
         /// </summary>
-        /// <param name="liturgieDto"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(LiturgieDto), 201)]
         [ProducesResponseType(typeof(string[]), 400)]
-        public IActionResult Post([FromForm]LiturgieDto liturgieDto)
+        public IActionResult Post([FromBody] LiturgieDto dto)
         {
-            if (!ValideerLiturgie(liturgieDto, out var errors))
+            if (!ValideerLiturgie(dto, out var errors))
             {
                 return BadRequest(errors);
             }
 
-            var liturgie = _mapper.Map<Liturgie>(liturgieDto);
+            var liturgie = _mapper.Map<Liturgie>(dto);
             _liturgieRepository.SaveLiturgie(liturgie);
             return CreatedAtAction("Get", new { id = liturgie.Id }, _mapper.Map<LiturgieDto>(liturgie));
         }
@@ -120,28 +120,5 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
 
             return !errors.Any();
         }
-    }
-
-    public class LiturgieDto
-    {
-        public long? Id { get; set; }
-        [Required]
-        public string Titel { get; set; }
-        [Required]
-        public DateTime Aanvangsdatum { get; set; }
-        [Required]
-        public DateTime Publicatiedatum { get; set; }
-        public IEnumerable<LiturgieItemDto> Items { get; set; }
-    }
-
-    public class LiturgieItemDto
-    {
-        public long? Id { get; set; }
-        [Required]
-        public int Index { get; set; }
-        [Required]
-        [EnumDataType(typeof(LiturgieItemSoort))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public LiturgieItemSoort Soort { get; set; }
     }
 }
