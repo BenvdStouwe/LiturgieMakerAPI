@@ -31,6 +31,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
     {
         public long? Id { get; set; }
         [Required]
+        [StringLength(64)]
         public string Titel { get; set; }
         [Required]
         public DateTime Aanvangsdatum { get; set; }

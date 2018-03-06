@@ -15,21 +15,13 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
     [Route("api/[controller]")]
     public class LiturgieController : Controller
     {
-        private const string ERROR_GEEN_LITURGIE = "De opgestuurde liturgie is leeg. Waarschijnlijk is er iets mis gegaan bij het versturen.";
-        private const string ERROR_GEVULD_ID_BIJ_POST = "Je probeerde een bestaande liturgie als nieuw op te sturen.";
-        private const string ERROR_GEEN_VALIDE_LITURGIEITEMSOORT = "Eén of meer van de opgestuurde liturgie items had een onbekend type.";
-        private const string ERROR_GEEN_TITEL = "Er is geen titel ingevuld.";
-        private const string ERROR_GEEN_AANVANGSDATUM = "Er is geen aavangsdatum ingevuld.";
-        private const string ERROR_GEEN_PUBLICATIEDATUM = "Er is geen publicatiedatum ingevuld.";
-        private const string ERROR_GEEN_LITURGIEITEM = "Het liturgie item is leeg";
+        private const string ERROR_NIET_VALIDE_LITURGIE = "De opgestuurde liturgie voeldoet niet aan de specificaties.";
 
         private readonly LiturgieRepository _liturgieRepository;
-        private readonly IMapper _mapper;
 
-        public LiturgieController(LiturgieRepository liturgieRepository, IMapper mapper)
+        public LiturgieController(LiturgieRepository liturgieRepository)
         {
             _liturgieRepository = liturgieRepository;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -44,7 +36,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         public IActionResult Get()
         {
             var liturgieen = _liturgieRepository.GetLiturgieen();
-            return Ok(_mapper.Map<IEnumerable<LiturgieDto>>(liturgieen));
+            return Ok(Mapper.Map<IEnumerable<LiturgieDto>>(liturgieen));
         }
 
         /// <summary>
@@ -68,7 +60,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
                 return NotFound("Deze liturgie bestaat niet.");
             }
 
-            return Ok(_mapper.Map<LiturgieDto>(liturgie));
+            return Ok(Mapper.Map<LiturgieDto>(liturgie));
         }
 
         /// <summary>
@@ -81,77 +73,14 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         [ProducesResponseType(typeof(string[]), 400)]
         public IActionResult Post([FromBody] LiturgieDto liturgieDto)
         {
-            if (!ValideerLiturgie(liturgieDto, out var errors))
+            if (liturgieDto == null || !TryValidateModel(liturgieDto))
             {
-                return BadRequest(errors);
+                return BadRequest(ERROR_NIET_VALIDE_LITURGIE);
             }
 
-            var liturgie = _mapper.Map<Liturgie>(liturgieDto);
-            _liturgieRepository.SaveLiturgie(liturgie);
+            var liturgie = _liturgieRepository.SaveLiturgie(Mapper.Map<Liturgie>(liturgieDto));
 
-            return CreatedAtAction("Get", new { id = liturgieDto.Id }, _mapper.Map<LiturgieDto>(liturgie));
-        }
-
-        private bool ValideerLiturgie(LiturgieDto dto, out IList<string> errors)
-        {
-            errors = new List<string>();
-
-            if (dto == null)
-            {
-                errors.Add(ERROR_GEEN_LITURGIE);
-                return false;
-            }
-
-            if (dto.Id != null)
-            {
-                errors.Add(ERROR_GEVULD_ID_BIJ_POST);
-            }
-
-            if (dto.Titel == null)
-            {
-                errors.Add(ERROR_GEEN_TITEL);
-            }
-
-            if (dto.Aanvangsdatum == null)
-            {
-                errors.Add(ERROR_GEEN_AANVANGSDATUM);
-            }
-
-            if (dto.Publicatiedatum == null)
-            {
-                errors.Add(ERROR_GEEN_PUBLICATIEDATUM);
-            }
-
-            if (dto.Items != null)
-            {
-                foreach (var item in dto.Items)
-                {
-                    if (!ValideerLiturgieItem(item, out var itemErrors))
-                    {
-                        errors.Concat(itemErrors);
-                    }
-                }
-            }
-
-            return !errors.Any();
-        }
-
-        private bool ValideerLiturgieItem(LiturgieItemDto itemDto, out IList<string> errors)
-        {
-            errors = new List<string>();
-
-            if (itemDto == null)
-            {
-                errors.Add(ERROR_GEEN_LITURGIEITEM);
-                return false;
-            }
-
-            if (!Enum.IsDefined(typeof(LiturgieItemSoort), itemDto.Soort))
-            {
-                errors.Add(ERROR_GEEN_VALIDE_LITURGIEITEMSOORT);
-            }
-
-            return !errors.Any();
+            return CreatedAtAction("Get", new { id = liturgieDto.Id }, Mapper.Map<LiturgieDto>(liturgie));
         }
     }
 }
