@@ -70,7 +70,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(LiturgieDto), 201)]
-        [ProducesResponseType(typeof(string[]), 400)]
+        [ProducesResponseType(typeof(string), 400)]
         public IActionResult Post([FromBody] LiturgieDto liturgieDto)
         {
             if (liturgieDto == null || !TryValidateModel(liturgieDto))
