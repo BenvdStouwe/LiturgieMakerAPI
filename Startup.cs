@@ -23,14 +23,12 @@ namespace LiturgieMakerAPI
     public class Startup
     {
         private readonly string LITURGIEMAKERDBNAME = "Liturgie";
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        private IHostingEnvironment CurrentEnvironment { get; set; }
+
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
             CurrentEnvironment = env;
         }
-
-        public IConfiguration Configuration { get; }
-        private IHostingEnvironment CurrentEnvironment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -43,6 +41,7 @@ namespace LiturgieMakerAPI
                 var basePath = AppContext.BaseDirectory;
                 var xmlPath = Path.Combine(basePath, "LiturgieMakerAPI.xml");
                 c.IncludeXmlComments(xmlPath);
+                c.DescribeAllEnumsAsStrings();
             });
 
             if (CurrentEnvironment.IsDevelopment())
@@ -50,13 +49,13 @@ namespace LiturgieMakerAPI
                 services.AddCors(options =>
                 {
                     options.AddPolicy("AllowAll", builder =>
-                        {
-                            builder
-                                .AllowAnyOrigin()
-                                .AllowAnyMethod()
-                                .AllowAnyHeader()
-                                .AllowCredentials();
-                        });
+                    {
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                    });
                 });
             }
             else
@@ -76,9 +75,9 @@ namespace LiturgieMakerAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (CurrentEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 // Setup testdata
@@ -91,21 +90,37 @@ namespace LiturgieMakerAPI
                 }
             }
             app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("LiturgieMaker/swagger.json", "LiturgieMaker API"); c.RoutePrefix = "api/swagger"; });
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("LiturgieMaker/swagger.json", "LiturgieMaker API");
+                c.RoutePrefix = "api/swagger";
+            });
 
             app.UseMvc();
         }
 
-        public void ConfigureLiedbundels(IServiceCollection services)
+        private void ConfigureLiedbundels(IServiceCollection services)
         {
-            services.AddDbContext<LiedbundelsContext>(opt => opt.UseInMemoryDatabase(LITURGIEMAKERDBNAME));
+            services.AddDbContext<LiedbundelsContext>(opt => SelectDb(opt));
             services.AddScoped<LiedbundelRepository>();
         }
 
-        public void ConfigureLiturgieMaker(IServiceCollection services)
+        private void ConfigureLiturgieMaker(IServiceCollection services)
         {
-            services.AddDbContext<LiturgieMakerContext>(opt => opt.UseInMemoryDatabase(LITURGIEMAKERDBNAME));
+            services.AddDbContext<LiturgieMakerContext>(opt => SelectDb(opt));
             services.AddScoped<LiturgieRepository>();
+        }
+
+        private void SelectDb(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (CurrentEnvironment.IsDevelopment())
+            {
+                optionsBuilder.UseInMemoryDatabase(LITURGIEMAKERDBNAME);
+            }
+            else
+            {
+                // TODO DB voor andere envs
+            }
         }
     }
 }
