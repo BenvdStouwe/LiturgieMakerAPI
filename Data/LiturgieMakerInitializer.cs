@@ -9,15 +9,24 @@ using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
 
 namespace LiturgieMakerAPI.Data
 {
-    internal static class LiturgieMakerInitializer
+    internal class LiturgieMakerInitializer
     {
-        public static void Initialize(LiturgieMakerContext liturgieMakerContext, LiedbundelsContext liedbundelsContext, bool truncate = false)
+        private readonly LiturgieMakerContext _context;
+        private readonly LiedbundelsContext _liedbundelsContext;
+
+        public LiturgieMakerInitializer(LiturgieMakerContext context, LiedbundelsContext liedbundelsContext)
         {
-            if (liturgieMakerContext.Liturgieen.Any())
+            _context = context;
+            _liedbundelsContext = liedbundelsContext;
+        }
+        
+        public void Initialize(bool truncate = false)
+        {
+            if (_context.Liturgieen.Any())
             {
                 if (truncate)
                 {
-                    liturgieMakerContext.Liturgieen.ToList().ForEach(l => liturgieMakerContext.Remove(l));
+                    _context.Liturgieen.ToList().ForEach(l => _context.Remove(l));
                 }
                 else
                 {
@@ -25,15 +34,11 @@ namespace LiturgieMakerAPI.Data
                 }
             }
 
-            var liturgie = new Liturgie
-            {
-                Titel = "Test liturgie",
-                Aanvangsdatum = DateTime.Now,
-                Publicatiedatum = DateTime.Now
-            };
+            var liturgie = NieuweLiturgie("Test liturgie", DateTime.Now, DateTime.Now.AddDays(-1));
+            var liturgie2 = NieuweLiturgie("Nog een test liturgie", DateTime.Now, DateTime.Now.AddDays(2));
 
-            var psalmboek = liedbundelsContext.Liedbundels.FirstOrDefault(lb => lb.Naam == "Psalm");
-            var opwekking = liedbundelsContext.Liedbundels.FirstOrDefault(lb => lb.Naam == "Opwekking");
+            var psalmboek = _liedbundelsContext.Liedbundels.FirstOrDefault(lb => lb.Naam == "Psalm");
+            var opwekking = _liedbundelsContext.Liedbundels.FirstOrDefault(lb => lb.Naam == "Opwekking");
 
             var item1 = new LiedItem
             {
@@ -49,25 +54,20 @@ namespace LiturgieMakerAPI.Data
                 Hoofdstuk = 5
             };
 
-            liturgieMakerContext.Add(item1);
-            liturgieMakerContext.Add(item2);
+            _context.Add(item1);
+            _context.Add(item2);
 
-            var items = new List<LiturgieItem> {
-                item1, item2
-            };
+            _context.SaveChanges();
+        }
 
-            liturgie.Items = items;
-
-            var liturgie2 = new Liturgie
+        private Liturgie NieuweLiturgie(string titel, DateTime aanvangsdatum, DateTime publicatieDatum)
+        {
+            return _context.Add(new Liturgie
             {
-                Titel = "Nog een test liturgie",
-                Aanvangsdatum = DateTime.Now,
-                Publicatiedatum = DateTime.Now.AddDays(2)
-            };
-            liturgieMakerContext.Add(liturgie2);
-
-            liturgieMakerContext.Add(liturgie);
-            liturgieMakerContext.SaveChanges();
+                Titel = titel,
+                Aanvangsdatum = aanvangsdatum,
+                Publicatiedatum = publicatieDatum
+            }).Entity;
         }
     }
 }

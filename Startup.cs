@@ -86,7 +86,7 @@ namespace LiturgieMakerAPI
                     var liedbundelsContext = serviceScope.ServiceProvider.GetRequiredService<LiedbundelsContext>();
                     var liturgieMakerContext = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
                     new LiedbundelInitializer(liedbundelsContext).Initialize();
-                    LiturgieMakerInitializer.Initialize(liturgieMakerContext, liedbundelsContext);
+                    new LiturgieMakerInitializer(liturgieMakerContext, liedbundelsContext).Initialize();
                 }
             }
             app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });
