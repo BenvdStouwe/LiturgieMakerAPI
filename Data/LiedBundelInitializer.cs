@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using LiturgieMakerAPI.Liedbundels.Context;
 using LiturgieMakerAPI.Liedbundels.Model;
+using LiturgieMakerAPI.LiturgieMaker.Context;
 
 namespace LiturgieMakerAPI.Data
 {
     internal class LiedbundelInitializer
     {
-        private readonly LiedbundelsContext _context;
+        private readonly LiturgieMakerContext _context;
 
-        public LiedbundelInitializer(LiedbundelsContext context)
+        public LiedbundelInitializer(LiturgieMakerContext context)
         {
             _context = context;
         }

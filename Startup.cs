@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using LiturgieMakerAPI.Data;
-using LiturgieMakerAPI.Liedbundels.Context;
 using LiturgieMakerAPI.Liedbundels.Repositories;
 using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Repositories;
@@ -22,7 +21,7 @@ namespace LiturgieMakerAPI
 {
     public class Startup
     {
-        private readonly string LITURGIEMAKERDBNAME = "Liturgie";
+        private readonly string LITURGIEMAKERDBSTRING = "Liturgie";
         private IHostingEnvironment CurrentEnvironment { get; set; }
 
         public Startup(IHostingEnvironment env)
@@ -83,10 +82,8 @@ namespace LiturgieMakerAPI
                 // Setup testdata
                 using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
                 {
-                    var liedbundelsContext = serviceScope.ServiceProvider.GetRequiredService<LiedbundelsContext>();
-                    var liturgieMakerContext = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
-                    new LiedbundelInitializer(liedbundelsContext).Initialize();
-                    new LiturgieMakerInitializer(liturgieMakerContext, liedbundelsContext).Initialize();
+                    var context = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
+                    new LiturgieMakerInitializer(context).Initialize();
                 }
             }
             app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });
@@ -101,7 +98,6 @@ namespace LiturgieMakerAPI
 
         private void ConfigureLiedbundels(IServiceCollection services)
         {
-            services.AddDbContext<LiedbundelsContext>(opt => SelectDb(opt));
             services.AddScoped<LiedbundelRepository>();
         }
 
@@ -115,11 +111,11 @@ namespace LiturgieMakerAPI
         {
             if (CurrentEnvironment.IsDevelopment())
             {
-                optionsBuilder.UseInMemoryDatabase(LITURGIEMAKERDBNAME);
+                optionsBuilder.UseInMemoryDatabase(LITURGIEMAKERDBSTRING);
             }
             else
             {
-                // TODO DB voor andere envs
+                optionsBuilder.UseNpgsql(LITURGIEMAKERDBSTRING);
             }
         }
     }

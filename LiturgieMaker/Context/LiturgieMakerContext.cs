@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using LiturgieMakerAPI.LiturgieMaker.Model;
 using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
+using LiturgieMakerAPI.Liedbundels.Model;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Context
 {
@@ -19,5 +20,9 @@ namespace LiturgieMakerAPI.LiturgieMaker.Context
         }
 
         public DbSet<Liturgie> Liturgieen { get; set; }
+
+        // Liedbundels
+        public DbSet<Liedbundel> Liedbundels { get; set; }
+        public DbSet<Lied> Liederen { get; set; }
     }
 }

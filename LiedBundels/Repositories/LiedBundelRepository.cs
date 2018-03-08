@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using LiturgieMakerAPI.Data;
-using LiturgieMakerAPI.Liedbundels.Context;
 using LiturgieMakerAPI.Liedbundels.Model;
+using LiturgieMakerAPI.LiturgieMaker.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace LiturgieMakerAPI.Liedbundels.Repositories
 {
     public class LiedbundelRepository
     {
-        private readonly LiedbundelsContext _context;
-        public LiedbundelRepository(LiedbundelsContext context)
+        private readonly LiturgieMakerContext _context;
+        public LiedbundelRepository(LiturgieMakerContext context)
         {
             _context = context;
         }
