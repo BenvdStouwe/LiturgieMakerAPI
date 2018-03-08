@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using AutoMapper;
 using LiturgieMakerAPI.LiturgieMaker.Model;
-using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
 using LiturgieMakerAPI.LiturgieMaker.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Controllers
 {

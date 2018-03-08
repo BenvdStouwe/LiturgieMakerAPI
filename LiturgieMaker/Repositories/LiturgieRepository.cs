@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using LiturgieMakerAPI.Liedbundels.Model;
 using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Model;
-using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Repositories
 {
