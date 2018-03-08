@@ -14,18 +14,11 @@ namespace LiturgieMakerAPI.Data
             _context = context;
         }
 
-        public void Initialize(bool truncate = false)
+        public void Initialize()
         {
             if (_context.Liedbundels.Any())
             {
-                if (truncate)
-                {
-                    _context.Liedbundels.ToList().ForEach(lb => _context.Remove(lb));
-                }
-                else
-                {
-                    return;
-                }
+                return;
             }
 
             var psalmboek = NieuweLiedbundel("Psalm", 150);

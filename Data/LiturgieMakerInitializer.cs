@@ -19,19 +19,12 @@ namespace LiturgieMakerAPI.Data
             _context = context;
             _liedbundelsContext = liedbundelsContext;
         }
-        
-        public void Initialize(bool truncate = false)
+
+        public void Initialize()
         {
             if (_context.Liturgieen.Any())
             {
-                if (truncate)
-                {
-                    _context.Liturgieen.ToList().ForEach(l => _context.Remove(l));
-                }
-                else
-                {
-                    return;
-                }
+                return;
             }
 
             var liturgie = NieuweLiturgie("Test liturgie", DateTime.Now, DateTime.Now.AddDays(-1));
