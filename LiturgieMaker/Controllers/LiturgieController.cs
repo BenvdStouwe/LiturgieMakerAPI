@@ -67,7 +67,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// Maak een nieuwe liturgie aan
         /// </summary>
         /// <param name="liturgieDto"></param>
-        /// <returns></returns>
+        /// <returns>Aangemaakte liturgie met Get locatie in de header</returns>
         [HttpPost]
         [ProducesResponseType(typeof(LiturgieDto), 201)]
         [ProducesResponseType(typeof(string), 400)]
