@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Model;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Repositories
 {
@@ -13,29 +13,26 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         public LiturgieRepository(LiturgieMakerContext context)
         {
             _context = context;
-
-            if (_context.Liturgieen.Count() == 0)
-            {
-                var liturige = new Liturgie
-                {
-                    Titel = "Test liturgie",
-                    Aanvangsdatum = DateTime.Now,
-                    Publicatiedatum = DateTime.Now
-                };
-
-                _context.Liturgieen.Add(liturige);
-                _context.SaveChanges();
-            }
         }
 
-        public Liturgie GetLiturgie(int id)
+        public Liturgie GetLiturgie(long id)
         {
-            return _context.Liturgieen.FirstOrDefault(l => l.Id == id);
+            return _context.Liturgie
+                .Include(l => l.Items)
+                .SingleOrDefault(l => l.Id == id);
         }
 
         public IEnumerable<Liturgie> GetLiturgieen()
         {
-            return _context.Liturgieen.ToList();
+            return _context.Liturgie
+                .ToList();
+        }
+
+        public Liturgie SaveLiturgie(Liturgie liturgie)
+        {
+            _context.Add(liturgie);
+            _context.SaveChanges();
+            return liturgie;
         }
     }
 }

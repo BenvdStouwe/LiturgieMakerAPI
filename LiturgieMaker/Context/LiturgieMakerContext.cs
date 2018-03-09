@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using LiturgieMakerAPI.LiturgieMaker.Model;
+using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
+using LiturgieMakerAPI.Liedbundels.Model;
 
 namespace LiturgieMakerAPI.LiturgieMaker.Context
 {
@@ -8,7 +10,24 @@ namespace LiturgieMakerAPI.LiturgieMaker.Context
         public LiturgieMakerContext(DbContextOptions<LiturgieMakerContext> options)
             : base(options) { }
 
-        public DbSet<Liturgie> Liturgieen { get; set; }
-        public DbSet<LiturgieItem> LiturgieItems { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            // LiturgieItems
+            builder.Entity<Liturgie>();
+            builder.Entity<SchriftlezingItem>();
+            builder.Entity<LiedItem>();
+
+            builder.Entity<Liedbundel>();
+            builder.Entity<Lied>();
+            builder.Entity<Vers>();
+
+            base.OnModelCreating(builder);
+        }
+
+        public DbSet<Liturgie> Liturgie { get; set; }
+
+        // Liedbundels
+        public DbSet<Liedbundel> Liedbundel { get; set; }
+        public DbSet<Lied> Lied { get; set; }
     }
 }
