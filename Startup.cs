@@ -6,6 +6,7 @@ using LiturgieMakerAPI.LiturgieMaker.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -15,11 +16,14 @@ namespace LiturgieMakerAPI
 {
     public class Startup
     {
-        private readonly string LITURGIEMAKERDBSTRING = "Liturgie";
-        private IHostingEnvironment CurrentEnvironment { get; set; }
+        private readonly string LITURGIEMAKERDBNAME = "LiturgieMaker";
 
-        public Startup(IHostingEnvironment env)
+        private readonly IConfiguration Configuration;
+        private readonly IHostingEnvironment CurrentEnvironment;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
+            Configuration = configuration;
             CurrentEnvironment = env;
         }
 
@@ -105,11 +109,12 @@ namespace LiturgieMakerAPI
         {
             if (CurrentEnvironment.IsDevelopment())
             {
-                optionsBuilder.UseInMemoryDatabase(LITURGIEMAKERDBSTRING);
+                optionsBuilder.UseInMemoryDatabase(LITURGIEMAKERDBNAME);
             }
             else
             {
-                optionsBuilder.UseNpgsql(LITURGIEMAKERDBSTRING);
+                var connectionString = Configuration.GetConnectionString(LITURGIEMAKERDBNAME);
+                optionsBuilder.UseMySql(connectionString);
             }
         }
     }

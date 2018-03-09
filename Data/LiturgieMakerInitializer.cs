@@ -2,6 +2,7 @@ using LiturgieMakerAPI.Liedbundels.Model;
 using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Model;
 using LiturgieMakerAPI.LiturgieMaker.Model.LiturgieItems;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -18,18 +19,23 @@ namespace LiturgieMakerAPI.Data
 
         public void Initialize()
         {
-            if (_context.Liturgieen.Any())
+            if (_context.Database.IsMySql())
+            {
+                _context.Database.Migrate();
+            }
+
+            if (_context.Liturgie.Any())
             {
                 return;
             }
 
-            if (!_context.Liedbundels.Any())
+            if (!_context.Liedbundel.Any())
             {
                 new LiedbundelInitializer(_context).Initialize();
             }
 
-            var psalmboek = _context.Liedbundels.FirstOrDefault(lb => lb.Naam == "Psalm");
-            var opwekking = _context.Liedbundels.FirstOrDefault(lb => lb.Naam == "Opwekking");
+            var psalmboek = _context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Psalm");
+            var opwekking = _context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Opwekking");
 
             var liturgie = NieuweLiturgie("Test liturgie", DateTime.Now, DateTime.Now.AddDays(-1));
             var liturgie2 = NieuweLiturgie("Nog een test liturgie", DateTime.Now, DateTime.Now.AddDays(2));

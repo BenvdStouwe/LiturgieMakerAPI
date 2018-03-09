@@ -16,7 +16,7 @@ namespace LiturgieMakerAPI.Data
 
         public void Initialize()
         {
-            if (_context.Liedbundels.Any())
+            if (_context.Liedbundel.Any())
             {
                 return;
             }

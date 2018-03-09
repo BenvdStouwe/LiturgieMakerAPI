@@ -17,14 +17,14 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
 
         public Liturgie GetLiturgie(long id)
         {
-            return _context.Liturgieen
+            return _context.Liturgie
                 .Include(l => l.Items)
                 .SingleOrDefault(l => l.Id == id);
         }
 
         public IEnumerable<Liturgie> GetLiturgieen()
         {
-            return _context.Liturgieen
+            return _context.Liturgie
                 .ToList();
         }
 

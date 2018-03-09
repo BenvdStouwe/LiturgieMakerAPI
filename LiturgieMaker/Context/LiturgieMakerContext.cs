@@ -13,16 +13,21 @@ namespace LiturgieMakerAPI.LiturgieMaker.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // LiturgieItems
+            builder.Entity<Liturgie>();
             builder.Entity<SchriftlezingItem>();
             builder.Entity<LiedItem>();
+
+            builder.Entity<Liedbundel>();
+            builder.Entity<Lied>();
+            builder.Entity<Vers>();
 
             base.OnModelCreating(builder);
         }
 
-        public DbSet<Liturgie> Liturgieen { get; set; }
+        public DbSet<Liturgie> Liturgie { get; set; }
 
         // Liedbundels
-        public DbSet<Liedbundel> Liedbundels { get; set; }
-        public DbSet<Lied> Liederen { get; set; }
+        public DbSet<Liedbundel> Liedbundel { get; set; }
+        public DbSet<Lied> Lied { get; set; }
     }
 }

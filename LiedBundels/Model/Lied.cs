@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace LiturgieMakerAPI.Liedbundels.Model
@@ -10,6 +11,7 @@ namespace LiturgieMakerAPI.Liedbundels.Model
         public string Naam { get; set; }
         public int AantalVerzen { get; set; }
         public IEnumerable<Vers> Verzen { get; set; }
+        [Required]
         public Liedbundel Liedbundel { get; set; }
 
         public void AddVers(Vers vers)

@@ -17,21 +17,21 @@ namespace LiturgieMakerAPI.Liedbundels.Repositories
 
         public Liedbundel GetLiedbundel(long id)
         {
-            return _context.Liedbundels
+            return _context.Liedbundel
                 .Include(lb => lb.Liederen)
                 .SingleOrDefault(lb => lb.Id == id);
         }
 
         public IEnumerable<Liedbundel> SearchLiedbundel(string naam)
         {
-            return _context.Liedbundels
+            return _context.Liedbundel
                 .Where(lb => lb.Naam.IndexOf(naam, StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList();
         }
 
         public IEnumerable<Liedbundel> GetLiedbundels()
         {
-            return _context.Liedbundels
+            return _context.Liedbundel
                 .ToList();
         }
     }
