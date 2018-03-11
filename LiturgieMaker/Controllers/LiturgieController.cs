@@ -9,7 +9,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
     [Route("api/[controller]")]
     public class LiturgieController : Controller
     {
-        private const string ERROR_NIET_VALIDE_LITURGIE = "De opgestuurde liturgie voeldoet niet aan de specificaties.";
+        private const string ERROR_NIET_VALIDE_LITURGIE = "De opgestuurde liturgie voldoet niet aan de specificaties.";
 
         private readonly LiturgieRepository _liturgieRepository;
 
@@ -67,7 +67,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         [ProducesResponseType(typeof(string), 400)]
         public IActionResult Post([FromBody] LiturgieDto liturgieDto)
         {
-            if (liturgieDto == null || !TryValidateModel(liturgieDto))
+            if (liturgieDto == null || liturgieDto.Id != null || !TryValidateModel(liturgieDto))
             {
                 return BadRequest(ERROR_NIET_VALIDE_LITURGIE);
             }
@@ -75,6 +75,38 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
             var liturgie = _liturgieRepository.SaveLiturgie(Mapper.Map<Liturgie>(liturgieDto));
 
             return CreatedAtAction("Get", new { id = liturgieDto.Id }, Mapper.Map<LiturgieDto>(liturgie));
+        }
+
+        /// <summary>
+        /// Vervang een bestaand liturgie met een nieuwe versie
+        /// </summary>
+        /// <param name="liturgieDto"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(string), 400)]
+        public IActionResult Put([FromBody] LiturgieDto liturgieDto)
+        {
+            if (liturgieDto == null || liturgieDto.Id == null || !TryValidateModel(liturgieDto))
+            {
+                return BadRequest(ERROR_NIET_VALIDE_LITURGIE);
+            }
+
+            var liturgie = _liturgieRepository.SaveLiturgie(Mapper.Map<Liturgie>(liturgieDto));
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Een liturgie verwijderen
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        public IActionResult Delete(long id)
+        {
+            _liturgieRepository.DeleteLiturgie(_liturgieRepository.GetLiturgie(id));
+            return NoContent();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         public Liturgie GetLiturgie(long id)
         {
             return _context.Liturgie
+                .Where(l => !l.Deleted)
                 .Include(l => l.Items)
                 .SingleOrDefault(l => l.Id == id);
         }
@@ -25,14 +26,28 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         public IEnumerable<Liturgie> GetLiturgieen()
         {
             return _context.Liturgie
+                .Where(l => !l.Deleted)
                 .ToList();
         }
 
         public Liturgie SaveLiturgie(Liturgie liturgie)
         {
-            _context.Add(liturgie);
+            if (liturgie.Id != null)
+            {
+                _context.Update(liturgie);
+            }
+            else
+            {
+                _context.Add(liturgie);
+            }
             _context.SaveChanges();
             return liturgie;
+        }
+
+        public void DeleteLiturgie(Liturgie liturgie)
+        {
+            liturgie.Deleted = true;
+            _context.SaveChanges();
         }
     }
 }

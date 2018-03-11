@@ -12,6 +12,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
         public DateTime Aanvangsdatum { get; set; }
         public DateTime Publicatiedatum { get; set; }
         public IEnumerable<LiturgieItem> Items { get; set; }
+        public bool Deleted { get; set; }
 
         public void AddItem(LiturgieItem item)
         {
@@ -31,7 +32,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
     {
         public long? Id { get; set; }
         [Required]
-        [StringLength(64)]
+        [StringLength(64, MinimumLength = 5)]
         public string Titel { get; set; }
         [Required]
         public DateTime Aanvangsdatum { get; set; }
