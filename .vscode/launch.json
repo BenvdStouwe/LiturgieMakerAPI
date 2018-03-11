@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/bin/Debug/netcoreapp2.0/LiturgieMakerAPI.dll",
+            "program": "${workspaceFolder}/LiturgieMakerAPI/bin/Debug/netcoreapp2.0/LiturgieMakerAPI.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/LiturgieMakerAPI/",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
