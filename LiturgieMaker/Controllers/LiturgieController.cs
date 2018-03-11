@@ -45,7 +45,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         [ProducesResponseType(typeof(string), 403)]
         [ProducesResponseType(typeof(string), 404)]
         [HttpGet("{id}")]
-        public IActionResult Get(long id)
+        public IActionResult Get([FromRoute] long id)
         {
             var liturgie = _liturgieRepository.GetLiturgie(id);
 
@@ -80,20 +80,21 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// <summary>
         /// Vervang een bestaand liturgie met een nieuwe versie
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="liturgieDto"></param>
         /// <returns></returns>
         [ProducesResponseType(204)]
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(typeof(string), 403)]
-        [HttpPut]
-        public IActionResult Put([FromBody] LiturgieDto liturgieDto)
+        [HttpPut("{id}")]
+        public IActionResult Put([FromRoute] long id, [FromBody] LiturgieDto liturgieDto)
         {
-            if (liturgieDto == null || liturgieDto.Id == null || !TryValidateModel(liturgieDto))
+            if (liturgieDto == null || !TryValidateModel(liturgieDto))
             {
                 return BadRequest(ERROR_NIET_VALIDE_LITURGIE);
             }
 
-            var liturgie = _liturgieRepository.SaveLiturgie(Mapper.Map<Liturgie>(liturgieDto));
+            _liturgieRepository.SaveLiturgie(Mapper.Map<Liturgie>(liturgieDto));
 
             return NoContent();
         }
@@ -106,7 +107,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(typeof(string), 403)]
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public IActionResult Delete([FromRoute] long id)
         {
             _liturgieRepository.DeleteLiturgie(_liturgieRepository.GetLiturgie(id));
             return NoContent();
