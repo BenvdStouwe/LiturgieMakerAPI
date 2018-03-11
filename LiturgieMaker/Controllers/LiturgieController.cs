@@ -41,10 +41,10 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// </remarks>
         /// <param name="id">Uniek ID</param>
         /// <returns>Een liturgie</returns>
-        [HttpGet("{id}")]
         [ProducesResponseType(typeof(LiturgieDto), 200)]
         [ProducesResponseType(typeof(string), 403)]
         [ProducesResponseType(typeof(string), 404)]
+        [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
             var liturgie = _liturgieRepository.GetLiturgie(id);
@@ -62,9 +62,9 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// </summary>
         /// <param name="liturgieDto"></param>
         /// <returns>Aangemaakte liturgie met Get locatie in de header</returns>
-        [HttpPost]
         [ProducesResponseType(typeof(LiturgieDto), 201)]
         [ProducesResponseType(typeof(string), 400)]
+        [HttpPost]
         public IActionResult Post([FromBody] LiturgieDto liturgieDto)
         {
             if (liturgieDto == null || liturgieDto.Id != null || !TryValidateModel(liturgieDto))
@@ -82,9 +82,10 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// </summary>
         /// <param name="liturgieDto"></param>
         /// <returns></returns>
-        [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 403)]
+        [HttpPut]
         public IActionResult Put([FromBody] LiturgieDto liturgieDto)
         {
             if (liturgieDto == null || liturgieDto.Id == null || !TryValidateModel(liturgieDto))
@@ -102,7 +103,9 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(string), 403)]
+        [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
             _liturgieRepository.DeleteLiturgie(_liturgieRepository.GetLiturgie(id));
