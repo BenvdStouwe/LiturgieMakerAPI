@@ -15,7 +15,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
             _context = context;
         }
 
-        public Liturgie GetLiturgie(long id)
+        public virtual Liturgie GetLiturgie(long id)
         {
             return _context.Liturgie
                 .Where(l => !l.Deleted)
@@ -44,7 +44,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
             return liturgie;
         }
 
-        public void DeleteLiturgie(Liturgie liturgie)
+        public virtual void DeleteLiturgie(Liturgie liturgie)
         {
             liturgie.Deleted = true;
             _context.SaveChanges();

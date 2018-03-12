@@ -9,8 +9,8 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
     [Route("api/[controller]")]
     public class LiturgieController : Controller
     {
-        private const string ERROR_NIET_VALIDE_LITURGIE = "De opgestuurde liturgie voldoet niet aan de specificaties.";
-
+        public const string ERROR_NIET_VALIDE_LITURGIE = "De opgestuurde liturgie voldoet niet aan de specificaties.";
+        public const string ERROR_LITURGIE_BESTAAT_NIET = "Deze liturgie bestaat niet.";
         private readonly LiturgieRepository _liturgieRepository;
 
         public LiturgieController(LiturgieRepository liturgieRepository)
@@ -51,7 +51,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
 
             if (liturgie == null)
             {
-                return NotFound("Deze liturgie bestaat niet.");
+                return NotFound(ERROR_LITURGIE_BESTAAT_NIET);
             }
 
             return Ok(Mapper.Map<LiturgieDto>(liturgie));
@@ -89,7 +89,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         [HttpPut("{id}")]
         public IActionResult Put([FromRoute] long id, [FromBody] LiturgieDto liturgieDto)
         {
-            if (liturgieDto == null || !TryValidateModel(liturgieDto))
+            if (liturgieDto == null || id != liturgieDto.Id || !TryValidateModel(liturgieDto))
             {
                 return BadRequest(ERROR_NIET_VALIDE_LITURGIE);
             }
