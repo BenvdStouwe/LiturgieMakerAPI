@@ -81,7 +81,7 @@ namespace LiturgieMakerAPI
                 using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
                 {
                     var context = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
-                    new LiturgieMakerInitializer(context).Initialize();
+                    LiturgieMakerInitializer.Initialize(context);
                 }
             }
             app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });

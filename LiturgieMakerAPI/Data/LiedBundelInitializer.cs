@@ -5,76 +5,69 @@ using System.Linq;
 
 namespace LiturgieMakerAPI.Data
 {
-    internal class LiedbundelInitializer
+    public static class LiedbundelInitializer
     {
-        private readonly LiturgieMakerContext _context;
-
-        public LiedbundelInitializer(LiturgieMakerContext context)
+        public static void Initialize(LiturgieMakerContext context)
         {
-            _context = context;
-        }
-
-        public void Initialize()
-        {
-            if (_context.Liedbundel.Any())
+            if (context.Liedbundel.Any())
             {
                 return;
             }
 
-            var psalmboek = NieuweLiedbundel("Psalm", 150);
-            var opwekking = NieuweLiedbundel("Opwekking", 795);
+            var psalmboek = context.Add(NieuweLiedbundel("Psalm", 150)).Entity;
+            var opwekking = context.Add(NieuweLiedbundel("Opwekking", 795));
 
-            var lied = NieuwLied("Juich aarde", 4, 100, psalmboek);
+            var lied = context.Add(NieuwLied("Juich aarde", 4, 100, psalmboek)).Entity;
 
-            var vers1 = NieuwVers(1, lied, @"Juich, aarde, juich alom den HEER;
+            var vers1 = context.Add(NieuwVers(1, lied, @"Juich, aarde, juich alom den HEER;
 Dient God met blijdschap, geeft Hem eer;
 Komt, nadert voor Zijn aangezicht;
-Zingt Hem een vrolijk lofgedicht.");
-            var vers2 = NieuwVers(2, lied, @"De HEER is God; erkent, dat Hij
+Zingt Hem een vrolijk lofgedicht.")).Entity;
+            var vers2 = context.Add(NieuwVers(2, lied, @"De HEER is God; erkent, dat Hij
 Ons heeft gemaakt (en geenszins wij)
 Tot schapen, die Hij voedt en weidt;
-Een volk, tot Zijnen dienst bereid.");
-            var vers3 = NieuwVers(3, lied, @"Gaat tot Zijn poorten in met lof,
+Een volk, tot Zijnen dienst bereid.")).Entity;
+            var vers3 = context.Add(NieuwVers(3, lied, @"Gaat tot Zijn poorten in met lof,
 Met lofzang in Zijn heilig hof;
 Looft Hem aldaar met hart en stem;
-Prijst Zijnen naam, verheerlijkt Hem.");
-            var vers4 = NieuwVers(4, lied, @"Want goedertieren is de HEER;
+Prijst Zijnen naam, verheerlijkt Hem.")).Entity;
+            var vers4 = context.Add(NieuwVers(4, lied, @"Want goedertieren is de HEER;
 Zijn goedheid eindigt nimmermeer;
 Zijn trouw en waarheid houdt haar kracht
-Tot in het laatste nageslacht.");
+Tot in het laatste nageslacht.")).Entity;
 
-            _context.SaveChanges();
+            context.SaveChanges();
         }
 
-        private Liedbundel NieuweLiedbundel(string naam, int aantalLiederen)
+        private static Liedbundel NieuweLiedbundel(string naam, int aantalLiederen)
         {
-            return _context.Add(new Liedbundel
+            return new Liedbundel
             {
                 Naam = naam,
                 AantalLiederen = aantalLiederen,
                 Liederen = new List<Lied>()
-            }).Entity;
+            };
         }
 
-        private Lied NieuwLied(string naam, int aantalVerzen, int liednummer, Liedbundel liedbundel)
+        private static Lied NieuwLied(string naam, int aantalVerzen, int liednummer, Liedbundel liedbundel)
         {
-            return _context.Add(new Lied
+            return new Lied
             {
                 Naam = naam,
                 AantalVerzen = aantalVerzen,
                 LiedNummer = liednummer,
                 Liedbundel = liedbundel
-            }).Entity;
+            };
         }
 
-        private Vers NieuwVers(int versNummer, Lied lied, string tekst)
+        private static Vers NieuwVers(int versNummer, Lied lied, string tekst)
         {
-            return _context.Add(new Vers
+            return new Vers
             {
                 VersNummer = versNummer,
                 Lied = lied,
                 Tekst = tekst
-            }).Entity;
+            };
         }
     }
 }

@@ -8,75 +8,66 @@ using System.Linq;
 
 namespace LiturgieMakerAPI.Data
 {
-    internal class LiturgieMakerInitializer
+    public static class LiturgieMakerInitializer
     {
-        private readonly LiturgieMakerContext _context;
-
-        public LiturgieMakerInitializer(LiturgieMakerContext context)
+        public static void Initialize(LiturgieMakerContext context)
         {
-            _context = context;
-        }
-
-        public void Initialize()
-        {
-            if (_context.Database.IsMySql())
+            if (context.Database.IsMySql())
             {
-                _context.Database.Migrate();
+                context.Database.Migrate();
             }
 
-            if (_context.Liturgie.Any())
+            if (context.Liturgie.Any())
             {
                 return;
             }
 
-            if (!_context.Liedbundel.Any())
+            if (!context.Liedbundel.Any())
             {
-                new LiedbundelInitializer(_context).Initialize();
+                LiedbundelInitializer.Initialize(context);
             }
 
-            var psalmboek = _context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Psalm");
-            var opwekking = _context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Opwekking");
+            var psalmboek = context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Psalm");
+            var opwekking = context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Opwekking");
 
-            var liturgie = NieuweLiturgie("Test liturgie", DateTime.Now, DateTime.Now.AddDays(-1));
-            var liturgie2 = NieuweLiturgie("Nog een test liturgie", DateTime.Now, DateTime.Now.AddDays(2));
+            var liturgie = context.Add(NieuweLiturgie("Test liturgie", DateTime.Now, DateTime.Now.AddDays(-1))).Entity;
+            var liturgie2 = context.Add(NieuweLiturgie("Nog een test liturgie", DateTime.Now, DateTime.Now.AddDays(2))).Entity;
 
-            var item1 = NieuwLiedItem(liturgie, 0, psalmboek.Liederen.SingleOrDefault(l => l.LiedNummer == 100));
-            var item2 = NieuwSchriftlezingItem(liturgie, 1, 5);
+            var item1 = context.Add(NieuwLiedItem(liturgie, 0, psalmboek.Liederen.SingleOrDefault(l => l.LiedNummer == 100))).Entity;
+            var item2 = context.Add(NieuwSchriftlezingItem(liturgie, 1, 5)).Entity;
 
-            _context.Add(item1);
-            _context.Add(item2);
-
-            _context.SaveChanges();
+            context.SaveChanges();
         }
 
-        private Liturgie NieuweLiturgie(string titel, DateTime aanvangsdatum, DateTime publicatieDatum)
+        public static Liturgie NieuweLiturgie(string titel, DateTime aanvangsdatum, DateTime publicatieDatum, bool deleted = false)
         {
-            return _context.Add(new Liturgie
+            return new Liturgie
             {
                 Titel = titel,
                 Aanvangsdatum = aanvangsdatum,
-                Publicatiedatum = publicatieDatum
-            }).Entity;
+                Publicatiedatum = publicatieDatum,
+                Deleted = deleted
+            };
         }
 
-        private LiedItem NieuwLiedItem(Liturgie liturgie, int index, Lied lied)
+        public static LiedItem NieuwLiedItem(Liturgie liturgie, int index, Lied lied)
         {
-            return _context.Add(new LiedItem
+            return new LiedItem
             {
                 Liturgie = liturgie,
                 Index = index,
                 Lied = lied
-            }).Entity;
+            };
         }
 
-        private SchriftlezingItem NieuwSchriftlezingItem(Liturgie liturgie, int index, int hoofdstuk)
+        public static SchriftlezingItem NieuwSchriftlezingItem(Liturgie liturgie, int index, int hoofdstuk)
         {
-            return _context.Add(new SchriftlezingItem
+            return new SchriftlezingItem
             {
                 Liturgie = liturgie,
                 Index = index,
                 Hoofdstuk = hoofdstuk
-            }).Entity;
+            };
         }
     }
 }
