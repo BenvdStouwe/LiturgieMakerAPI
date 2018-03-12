@@ -47,7 +47,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         public virtual void DeleteLiturgie(Liturgie liturgie)
         {
             liturgie.Deleted = true;
-            _context.SaveChanges();
+            SaveLiturgie(liturgie);
         }
     }
 }
