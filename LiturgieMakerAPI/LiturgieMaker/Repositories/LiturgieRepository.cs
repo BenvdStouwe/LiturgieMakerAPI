@@ -32,16 +32,9 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
 
         public Liturgie SaveLiturgie(Liturgie liturgie)
         {
-            if (liturgie.Id != null)
-            {
-                _context.Update(liturgie);
-            }
-            else
-            {
-                _context.Add(liturgie);
-            }
+            var entry = liturgie.Id == null ? _context.Add(liturgie) : _context.Update(liturgie);
             _context.SaveChanges();
-            return liturgie;
+            return entry.Entity;
         }
 
         public virtual void DeleteLiturgie(Liturgie liturgie)

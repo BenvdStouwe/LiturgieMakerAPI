@@ -54,7 +54,7 @@
             "problemMatcher": []
         },
         {
-            "label": "test",
+            "label": "test alles",
             "command": "dotnet",
             "type": "process",
             "args": [

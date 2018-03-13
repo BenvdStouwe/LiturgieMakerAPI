@@ -9,7 +9,7 @@ using Xunit;
 
 namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
 {
-    public class LiturgieRepositoryTest : IDisposable
+    public class LiturgieRepositoryTest
     {
         LiturgieMakerContext _context;
         LiturgieRepository _repository;
@@ -22,11 +22,6 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
             _repository = new LiturgieRepository(_context);
 
             SetupLiturgie();
-        }
-
-        public void Dispose()
-        {
-            _context.Dispose();
         }
 
         private void SetupLiturgie()
@@ -43,6 +38,19 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
 
             //Then`
             AssertEqualLiturige(_valideActieveLiturgie, liturgie);
+        }
+
+        [Fact]
+        public void Get_AlsNietBestaat_DanReturnNull()
+        {
+            //Given
+            var testId = 7891237;
+
+            //When
+            var liturgie = _repository.GetLiturgie(testId);
+
+            //Then
+            Assert.Null(liturgie);
         }
 
         [Fact]

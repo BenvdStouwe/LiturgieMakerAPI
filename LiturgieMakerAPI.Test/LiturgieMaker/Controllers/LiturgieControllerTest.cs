@@ -39,16 +39,15 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
         public void Get_AlsBestaat_DanDtoTerug()
         {
             // Given
+            LiturgieDto dto = BuildLiturgieDto(_valideActieveLiturgie);
             MockGetLiturgie(_valideActieveLiturgie);
-            MockLiturgieMapper(_valideActieveLiturgie, BuildLiturgieDto(_valideActieveLiturgie));
+            MockLiturgieMapper(_valideActieveLiturgie, dto);
 
             // When
-            var result = _controller.Get(_valideActieveLiturgie.Id.Value) as OkObjectResult;
-            var liturgieDto = result?.Value as LiturgieDto;
+            var result = _controller.Get(_valideActieveLiturgie.Id.Value);
 
             // Then
-            Assert.NotNull(liturgieDto);
-            Assert.Equal(_valideActieveLiturgie.Titel, liturgieDto.Titel);
+            ActionResultTestHelper.AssertOk(result, dto);
         }
 
         [Fact]
@@ -59,7 +58,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             long testId = 78234;
 
             // When
-            var result = _controller.Get(testId) as NotFoundObjectResult;
+            var result = _controller.Get(testId);
 
             // Then
             ActionResultTestHelper.AssertNotFound(result, LiturgieController.ERROR_LITURGIE_BESTAAT_NIET);
@@ -72,7 +71,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             var liturgieDto = BuildLiturgieDto(54136);
 
             //When
-            var result = _controller.Post(liturgieDto) as BadRequestObjectResult;
+            var result = _controller.Post(liturgieDto);
 
             //Then
             ActionResultTestHelper.AssertBadRequest(result, LiturgieController.ERROR_NIET_VALIDE_LITURGIE);
@@ -86,7 +85,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             long testId = 12345;
 
             //When
-            var result = _controller.Put(testId, liturgieDto) as BadRequestObjectResult;
+            var result = _controller.Put(testId, liturgieDto);
 
             //Then
             ActionResultTestHelper.AssertBadRequest(result, LiturgieController.ERROR_NIET_VALIDE_LITURGIE);
@@ -100,10 +99,11 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             MockDeleteLiturgie(_valideActieveLiturgie);
 
             // When
-            _controller.Delete(_valideActieveLiturgie.Id.Value);
+            var result = _controller.Delete(_valideActieveLiturgie.Id.Value);
 
             // Then
             _liturgieRepositoryMock.Verify();
+            ActionResultTestHelper.AssertNoContent(result);
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             MockGetLiturgie(null);
 
             //When
-            var result = _controller.Delete(testId) as NotFoundObjectResult;
+            var result = _controller.Delete(testId);
 
             //Then
             ActionResultTestHelper.AssertNotFound(result, LiturgieController.ERROR_LITURGIE_BESTAAT_NIET);
