@@ -12,6 +12,9 @@
                 "kind": "build",
                 "isDefault": true
             },
+            "options": {
+                "cwd": "LiturgieMakerAPI/"
+            },
             "problemMatcher": "$msCompile"
         },
         {
@@ -33,16 +36,31 @@
             "problemMatcher": []
         },
         {
+            "label": "test current class",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "--filter",
+                "${fileBasenameNoExtension}"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "LiturgieMakerAPI.Test/"
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "test",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "test"
             ],
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
+            "group": "test",
             "options": {
                 "cwd": "LiturgieMakerAPI.Test/"
             },

@@ -62,6 +62,8 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
             Assert.Equal(expected.Id.Value, actually.Id.Value);
             Assert.Equal(expected.Titel, actually.Titel);
             Assert.Equal(expected.Aanvangsdatum, actually.Aanvangsdatum);
+            Assert.Equal(expected.Publicatiedatum, actually.Publicatiedatum);
+            Assert.Equal(expected.Deleted, actually.Deleted);
         }
     }
 }

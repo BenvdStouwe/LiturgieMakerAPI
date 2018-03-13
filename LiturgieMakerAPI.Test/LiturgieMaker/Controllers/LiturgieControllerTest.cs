@@ -5,6 +5,7 @@ using LiturgieMakerAPI.Data;
 using LiturgieMakerAPI.LiturgieMaker.Controllers;
 using LiturgieMakerAPI.LiturgieMaker.Model;
 using LiturgieMakerAPI.LiturgieMaker.Repositories;
+using LiturgieMakerAPI.Test.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
@@ -13,9 +14,6 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 {
     public class LiturgieControllerTest
     {
-        private const int STATUSCODE_BADREQUEST = 400;
-        private const int STATUSCODE_NOTFOUND = 404;
-
         private Mock<LiturgieRepository> _liturgieRepositoryMock;
         private Mock<IMapper> _mapperMock;
         private LiturgieController _controller;
@@ -62,12 +60,9 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
             // When
             var result = _controller.Get(testId) as NotFoundObjectResult;
-            var message = result?.Value as string;
 
             // Then
-            Assert.NotNull(result);
-            Assert.Equal(STATUSCODE_NOTFOUND, result.StatusCode);
-            Assert.Equal(LiturgieController.ERROR_LITURGIE_BESTAAT_NIET, message);
+            ActionResultTestHelper.AssertNotFound(result, LiturgieController.ERROR_LITURGIE_BESTAAT_NIET);
         }
 
         [Fact]
@@ -78,12 +73,9 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
             //When
             var result = _controller.Post(liturgieDto) as BadRequestObjectResult;
-            var message = result?.Value as string;
 
             //Then
-            Assert.NotNull(result);
-            Assert.Equal(STATUSCODE_BADREQUEST, result.StatusCode);
-            Assert.Equal(LiturgieController.ERROR_NIET_VALIDE_LITURGIE, message);
+            ActionResultTestHelper.AssertBadRequest(result, LiturgieController.ERROR_NIET_VALIDE_LITURGIE);
         }
 
         [Fact]
@@ -95,12 +87,9 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
             //When
             var result = _controller.Put(testId, liturgieDto) as BadRequestObjectResult;
-            var message = result?.Value as string;
 
             //Then
-            Assert.NotNull(result);
-            Assert.Equal(STATUSCODE_BADREQUEST, result.StatusCode);
-            Assert.Equal(LiturgieController.ERROR_NIET_VALIDE_LITURGIE, message);
+            ActionResultTestHelper.AssertBadRequest(result, LiturgieController.ERROR_NIET_VALIDE_LITURGIE);
         }
 
         [Fact]
@@ -126,12 +115,9 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
             //When
             var result = _controller.Delete(testId) as NotFoundObjectResult;
-            var message = result?.Value as string;
 
             //Then
-            Assert.NotNull(result);
-            Assert.Equal(STATUSCODE_NOTFOUND, result.StatusCode);
-            Assert.Equal(LiturgieController.ERROR_LITURGIE_BESTAAT_NIET, message);
+            ActionResultTestHelper.AssertNotFound(result, LiturgieController.ERROR_LITURGIE_BESTAAT_NIET);
         }
 
         private LiturgieDto BuildLiturgieDto(long? id = null)
