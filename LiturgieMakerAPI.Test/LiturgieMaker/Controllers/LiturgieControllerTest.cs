@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AutoMapper;
 using LiturgieMakerAPI.Data;
 using LiturgieMakerAPI.LiturgieMaker.Controllers;
 using LiturgieMakerAPI.LiturgieMaker.Model;
@@ -12,35 +13,36 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 {
     public class LiturgieControllerTest
     {
+        private const int STATUSCODE_BADREQUEST = 400;
+        private const int STATUSCODE_NOTFOUND = 404;
+
         private Mock<LiturgieRepository> _liturgieRepositoryMock;
+        private Mock<IMapper> _mapperMock;
         private LiturgieController _controller;
 
         private Liturgie _valideActieveLiturgie;
 
         public LiturgieControllerTest()
         {
-            Setup();
-        }
-
-        private void Setup()
-        {
+            _mapperMock = new Mock<IMapper>();
             _liturgieRepositoryMock = new Mock<LiturgieRepository>(null);
-            _controller = new LiturgieController(_liturgieRepositoryMock.Object);
+            _controller = new LiturgieController(_liturgieRepositoryMock.Object, _mapperMock.Object);
 
             SetupLiturgie();
         }
 
         private void SetupLiturgie()
         {
-            _valideActieveLiturgie = LiturgieMakerInitializer.NieuweLiturgie("Test", DateTime.Now, DateTime.Now, false);
+            _valideActieveLiturgie = LiturgieMakerInitializer.BuildLiturgie("Test", DateTime.Now, DateTime.Now, false);
             _valideActieveLiturgie.Id = 456;
         }
 
-        [Fact(Skip = "IMapper werkt nog niet mee")]
+        [Fact]
         public void Get_AlsBestaat_DanDtoTerug()
         {
             // Given
             MockGetLiturgie(_valideActieveLiturgie);
+            MockLiturgieMapper(_valideActieveLiturgie, BuildLiturgieDto(_valideActieveLiturgie));
 
             // When
             var result = _controller.Get(_valideActieveLiturgie.Id.Value) as OkObjectResult;
@@ -64,7 +66,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
             // Then
             Assert.NotNull(result);
-            Assert.Equal(404, result.StatusCode);
+            Assert.Equal(STATUSCODE_NOTFOUND, result.StatusCode);
             Assert.Equal(LiturgieController.ERROR_LITURGIE_BESTAAT_NIET, message);
         }
 
@@ -80,7 +82,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
             //Then
             Assert.NotNull(result);
-            Assert.Equal(400, result.StatusCode);
+            Assert.Equal(STATUSCODE_BADREQUEST, result.StatusCode);
             Assert.Equal(LiturgieController.ERROR_NIET_VALIDE_LITURGIE, message);
         }
 
@@ -97,7 +99,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
             //Then
             Assert.NotNull(result);
-            Assert.Equal(400, result.StatusCode);
+            Assert.Equal(STATUSCODE_BADREQUEST, result.StatusCode);
             Assert.Equal(LiturgieController.ERROR_NIET_VALIDE_LITURGIE, message);
         }
 
@@ -115,6 +117,23 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             _liturgieRepositoryMock.Verify();
         }
 
+        [Fact]
+        public void Delete_AlsNietBestaandeLiturgie_DanNotFound()
+        {
+            //Given
+            var testId = 890859;
+            MockGetLiturgie(null);
+
+            //When
+            var result = _controller.Delete(testId) as NotFoundObjectResult;
+            var message = result?.Value as string;
+
+            //Then
+            Assert.NotNull(result);
+            Assert.Equal(STATUSCODE_NOTFOUND, result.StatusCode);
+            Assert.Equal(LiturgieController.ERROR_LITURGIE_BESTAAT_NIET, message);
+        }
+
         private LiturgieDto BuildLiturgieDto(long? id = null)
         {
             return new LiturgieDto
@@ -126,9 +145,26 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             };
         }
 
+        private LiturgieDto BuildLiturgieDto(Liturgie liturgie)
+        {
+            return new LiturgieDto
+            {
+                Id = liturgie.Id,
+                Titel = liturgie.Titel,
+                Aanvangsdatum = liturgie.Aanvangsdatum,
+                Publicatiedatum = liturgie.Publicatiedatum
+            };
+        }
+
+        private void MockLiturgieMapper(Liturgie source, LiturgieDto target)
+        {
+            _mapperMock.Setup(mock => mock.Map<LiturgieDto>(source))
+                .Returns(target);
+        }
+
         private void MockGetLiturgie(Liturgie liturgie)
         {
-            _liturgieRepositoryMock.Setup(mock => mock.GetLiturgie(It.Is<long>(l => l == liturgie.Id.Value)))
+            _liturgieRepositoryMock.Setup(mock => mock.GetLiturgie(It.IsAny<long>()))
                 .Returns(liturgie)
                 .Verifiable("Liturgie ophalen");
         }

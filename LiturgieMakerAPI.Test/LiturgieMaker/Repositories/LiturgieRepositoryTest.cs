@@ -31,7 +31,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
 
         private void SetupLiturgie()
         {
-            _valideActieveLiturgie = LiturgieMakerInitializer.NieuweLiturgie("Test", DateTime.Now, DateTime.Now, false);
+            _valideActieveLiturgie = LiturgieMakerInitializer.BuildLiturgie("Test", DateTime.Now, DateTime.Now, false);
             _repository.SaveLiturgie(_valideActieveLiturgie);
         }
 

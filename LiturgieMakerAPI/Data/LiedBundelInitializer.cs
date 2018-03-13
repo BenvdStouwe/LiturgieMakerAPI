@@ -14,24 +14,24 @@ namespace LiturgieMakerAPI.Data
                 return;
             }
 
-            var psalmboek = context.Add(NieuweLiedbundel("Psalm", 150)).Entity;
-            var opwekking = context.Add(NieuweLiedbundel("Opwekking", 795));
+            var psalmboek = context.Add(BuildLiedbundel("Psalm", 150)).Entity;
+            var opwekking = context.Add(BuildLiedbundel("Opwekking", 795));
 
-            var lied = context.Add(NieuwLied("Juich aarde", 4, 100, psalmboek)).Entity;
+            var lied = context.Add(BuildLied("Juich aarde", 4, 100, psalmboek)).Entity;
 
-            var vers1 = context.Add(NieuwVers(1, lied, @"Juich, aarde, juich alom den HEER;
+            var vers1 = context.Add(BuildVers(1, lied, @"Juich, aarde, juich alom den HEER;
 Dient God met blijdschap, geeft Hem eer;
 Komt, nadert voor Zijn aangezicht;
 Zingt Hem een vrolijk lofgedicht.")).Entity;
-            var vers2 = context.Add(NieuwVers(2, lied, @"De HEER is God; erkent, dat Hij
+            var vers2 = context.Add(BuildVers(2, lied, @"De HEER is God; erkent, dat Hij
 Ons heeft gemaakt (en geenszins wij)
 Tot schapen, die Hij voedt en weidt;
 Een volk, tot Zijnen dienst bereid.")).Entity;
-            var vers3 = context.Add(NieuwVers(3, lied, @"Gaat tot Zijn poorten in met lof,
+            var vers3 = context.Add(BuildVers(3, lied, @"Gaat tot Zijn poorten in met lof,
 Met lofzang in Zijn heilig hof;
 Looft Hem aldaar met hart en stem;
 Prijst Zijnen naam, verheerlijkt Hem.")).Entity;
-            var vers4 = context.Add(NieuwVers(4, lied, @"Want goedertieren is de HEER;
+            var vers4 = context.Add(BuildVers(4, lied, @"Want goedertieren is de HEER;
 Zijn goedheid eindigt nimmermeer;
 Zijn trouw en waarheid houdt haar kracht
 Tot in het laatste nageslacht.")).Entity;
@@ -39,7 +39,7 @@ Tot in het laatste nageslacht.")).Entity;
             context.SaveChanges();
         }
 
-        private static Liedbundel NieuweLiedbundel(string naam, int aantalLiederen)
+        private static Liedbundel BuildLiedbundel(string naam, int aantalLiederen)
         {
             return new Liedbundel
             {
@@ -49,7 +49,7 @@ Tot in het laatste nageslacht.")).Entity;
             };
         }
 
-        private static Lied NieuwLied(string naam, int aantalVerzen, int liednummer, Liedbundel liedbundel)
+        private static Lied BuildLied(string naam, int aantalVerzen, int liednummer, Liedbundel liedbundel)
         {
             return new Lied
             {
@@ -60,7 +60,7 @@ Tot in het laatste nageslacht.")).Entity;
             };
         }
 
-        private static Vers NieuwVers(int versNummer, Lied lied, string tekst)
+        private static Vers BuildVers(int versNummer, Lied lied, string tekst)
         {
             return new Vers
             {

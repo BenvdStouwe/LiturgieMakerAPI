@@ -30,16 +30,16 @@ namespace LiturgieMakerAPI.Data
             var psalmboek = context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Psalm");
             var opwekking = context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Opwekking");
 
-            var liturgie = context.Add(NieuweLiturgie("Test liturgie", DateTime.Now, DateTime.Now.AddDays(-1))).Entity;
-            var liturgie2 = context.Add(NieuweLiturgie("Nog een test liturgie", DateTime.Now, DateTime.Now.AddDays(2))).Entity;
+            var liturgie = context.Add(BuildLiturgie("Test liturgie", DateTime.Now, DateTime.Now.AddDays(-1))).Entity;
+            var liturgie2 = context.Add(BuildLiturgie("Nog een test liturgie", DateTime.Now, DateTime.Now.AddDays(2))).Entity;
 
-            var item1 = context.Add(NieuwLiedItem(liturgie, 0, psalmboek.Liederen.SingleOrDefault(l => l.LiedNummer == 100))).Entity;
-            var item2 = context.Add(NieuwSchriftlezingItem(liturgie, 1, 5)).Entity;
+            var item1 = context.Add(BuildLiedItem(liturgie, 0, psalmboek.Liederen.SingleOrDefault(l => l.LiedNummer == 100))).Entity;
+            var item2 = context.Add(BuildSchriftlezingItem(liturgie, 1, 5)).Entity;
 
             context.SaveChanges();
         }
 
-        public static Liturgie NieuweLiturgie(string titel, DateTime aanvangsdatum, DateTime publicatieDatum, bool deleted = false)
+        public static Liturgie BuildLiturgie(string titel, DateTime aanvangsdatum, DateTime publicatieDatum, bool deleted = false)
         {
             return new Liturgie
             {
@@ -50,7 +50,7 @@ namespace LiturgieMakerAPI.Data
             };
         }
 
-        public static LiedItem NieuwLiedItem(Liturgie liturgie, int index, Lied lied)
+        public static LiedItem BuildLiedItem(Liturgie liturgie, int index, Lied lied)
         {
             return new LiedItem
             {
@@ -60,7 +60,7 @@ namespace LiturgieMakerAPI.Data
             };
         }
 
-        public static SchriftlezingItem NieuwSchriftlezingItem(Liturgie liturgie, int index, int hoofdstuk)
+        public static SchriftlezingItem BuildSchriftlezingItem(Liturgie liturgie, int index, int hoofdstuk)
         {
             return new SchriftlezingItem
             {

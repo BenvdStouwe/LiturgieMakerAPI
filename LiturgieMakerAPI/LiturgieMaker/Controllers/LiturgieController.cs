@@ -12,10 +12,12 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         public const string ERROR_NIET_VALIDE_LITURGIE = "De opgestuurde liturgie voldoet niet aan de specificaties.";
         public const string ERROR_LITURGIE_BESTAAT_NIET = "Deze liturgie bestaat niet.";
         private readonly LiturgieRepository _liturgieRepository;
+        private readonly IMapper _mapper;
 
-        public LiturgieController(LiturgieRepository liturgieRepository)
+        public LiturgieController(LiturgieRepository liturgieRepository, IMapper mapper)
         {
             _liturgieRepository = liturgieRepository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -30,7 +32,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         public IActionResult Get()
         {
             var liturgieen = _liturgieRepository.GetLiturgieen();
-            return Ok(Mapper.Map<IEnumerable<LiturgieDto>>(liturgieen));
+            return Ok(_mapper.Map<IEnumerable<LiturgieDto>>(liturgieen));
         }
 
         /// <summary>
@@ -54,7 +56,9 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
                 return NotFound(ERROR_LITURGIE_BESTAAT_NIET);
             }
 
-            return Ok(Mapper.Map<LiturgieDto>(liturgie));
+            var dto = _mapper.Map<LiturgieDto>(liturgie);
+
+            return Ok(dto);
         }
 
         /// <summary>
@@ -72,9 +76,9 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
                 return BadRequest(ERROR_NIET_VALIDE_LITURGIE);
             }
 
-            var liturgie = _liturgieRepository.SaveLiturgie(Mapper.Map<Liturgie>(liturgieDto));
+            var liturgie = _liturgieRepository.SaveLiturgie(_mapper.Map<Liturgie>(liturgieDto));
 
-            return CreatedAtAction("Get", new { id = liturgieDto.Id }, Mapper.Map<LiturgieDto>(liturgie));
+            return CreatedAtAction("Get", new { id = liturgieDto.Id }, _mapper.Map<LiturgieDto>(liturgie));
         }
 
         /// <summary>
@@ -94,7 +98,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
                 return BadRequest(ERROR_NIET_VALIDE_LITURGIE);
             }
 
-            _liturgieRepository.SaveLiturgie(Mapper.Map<Liturgie>(liturgieDto));
+            _liturgieRepository.SaveLiturgie(_mapper.Map<Liturgie>(liturgieDto));
 
             return NoContent();
         }
@@ -106,10 +110,18 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// <returns></returns>
         [ProducesResponseType(204)]
         [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] long id)
         {
-            _liturgieRepository.DeleteLiturgie(_liturgieRepository.GetLiturgie(id));
+            var liturgie = _liturgieRepository.GetLiturgie(id);
+
+            if (liturgie == null)
+            {
+                return NotFound(ERROR_LITURGIE_BESTAAT_NIET);
+            }
+
+            _liturgieRepository.DeleteLiturgie(liturgie);
             return NoContent();
         }
     }
