@@ -76,7 +76,6 @@ namespace LiturgieMakerAPI
         {
             if (CurrentEnvironment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 // Setup testdata
                 using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
                 {

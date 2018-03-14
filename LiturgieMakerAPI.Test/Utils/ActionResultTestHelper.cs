@@ -5,46 +5,57 @@ namespace LiturgieMakerAPI.Test.Utils
 {
     public static class ActionResultTestHelper
     {
-        public static void AssertBadRequest(IActionResult result, string message = null)
-        {
-            AssertObjectResult(result, 400, message);
-        }
-
-        public static void AssertNotFound(IActionResult result, string message = null)
-        {
-            AssertObjectResult(result, 404, message);
-        }
-
-        public static void AssertUnauthorized(IActionResult result)
-        {
-            AssertObjectResult(result, 401);
-        }
-
         public static void AssertOk(IActionResult result, object value)
         {
-            AssertObjectResult(result, 200, value);
+            AssertIActionResult(result, 200, value);
         }
 
         public static void AssertNoContent(IActionResult result)
         {
-            AssertObjectResult(result, 204);
+            AssertIActionResult(result, 204);
+        }
+        public static void AssertBadRequest(IActionResult result, object value = null)
+        {
+            AssertIActionResult(result, 400, value);
         }
 
-        private static void AssertObjectResult(IActionResult result, int statusCode, object value = null)
+        public static void AssertUnauthorized(IActionResult result)
         {
-            Assert.NotNull(result);
-            if (result is StatusCodeResult statusResult)
+            AssertIActionResult(result, 401);
+        }
+
+        public static void AssertNotFound(IActionResult result, object value = null)
+        {
+            AssertIActionResult(result, 404, value);
+        }
+
+        private static void AssertIActionResult(IActionResult result, int statuscode, object value = null)
+        {
+            if (result is StatusCodeResult)
             {
-                Assert.Equal(statusCode, statusResult.StatusCode);
+                AssertStatusCodeResult(result, statuscode);
             }
-            else if (result is ObjectResult objectResult)
+            else if (result is ObjectResult)
             {
-                Assert.Equal(statusCode, objectResult.StatusCode);
-                if (result is ObjectResult && value != null)
-                {
-                    Assert.Equal(value, objectResult.Value);
-                }
+                AssertObjectResult(result, statuscode, value);
             }
+        }
+
+        private static void AssertStatusCodeResult(IActionResult result, int statusCode)
+        {
+            var statusResult = result as StatusCodeResult;
+            Assert.NotNull(statusResult);
+            Assert.Equal(statusCode, statusResult.StatusCode);
+        }
+
+        private static void AssertObjectResult(IActionResult result, int statusCode, object value)
+        {
+            var objectResult = result as ObjectResult;
+            Assert.NotNull(objectResult);
+            // Extra check of de value not null is, omdat dat het hele nut van een ObjectResult is
+            Assert.NotNull(objectResult.Value);
+            Assert.Equal(statusCode, objectResult.StatusCode);
+            Assert.Equal(value, objectResult.Value);
         }
     }
 }
