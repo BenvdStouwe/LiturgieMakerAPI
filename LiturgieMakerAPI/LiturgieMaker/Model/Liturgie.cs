@@ -40,4 +40,12 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
         public DateTime Publicatiedatum { get; set; }
         public IEnumerable<LiturgieItemDto> Items { get; set; }
     }
+
+    public static class LiturgieIQueryableExtensions
+    {
+        public static IQueryable<Liturgie> WhereActief(this IQueryable<Liturgie> query)
+        {
+            return query.Where(l => !l.Deleted);
+        }
+    }
 }

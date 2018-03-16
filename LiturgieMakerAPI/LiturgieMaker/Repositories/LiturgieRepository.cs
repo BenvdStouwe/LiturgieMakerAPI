@@ -18,15 +18,15 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         public virtual Liturgie GetLiturgie(long id)
         {
             return _context.Liturgie
-                .Where(l => !l.Deleted)
+                .WhereActief()
                 .Include(l => l.Items)
-                .SingleOrDefault(l => l.Id == id);
+                .SingleOrDefault(l => l.Id.Value == id);
         }
 
-        public IEnumerable<Liturgie> GetLiturgieen()
+        public virtual IEnumerable<Liturgie> GetLiturgieen()
         {
             return _context.Liturgie
-                .Where(l => !l.Deleted)
+                .WhereActief()
                 .ToList();
         }
 
