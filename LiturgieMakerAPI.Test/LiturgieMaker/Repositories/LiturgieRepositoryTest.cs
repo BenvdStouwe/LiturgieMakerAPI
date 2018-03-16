@@ -31,7 +31,22 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
         }
 
         [Fact]
-        public void Get_AlsBestaat_DanTeruggeven()
+        public void GetAlles_AlsErDeletedZijn_DanNegeren()
+        {
+            //Given
+            var verwijderdeLiturgie = LiturgieMakerInitializer.BuildLiturgie("Verwijderd", DateTime.Now.AddMonths(-1), DateTime.Now.AddMonths(-1), true);
+            _repository.SaveLiturgie(verwijderdeLiturgie);
+
+            //When
+            var result = _repository.GetLiturgieen();
+
+            //Then
+            Assert.Single(result);
+            Assert.Equal(_valideActieveLiturgie.Id.Value, result.First().Id.Value);
+        }
+
+        [Fact]
+        public void GetMetId_AlsBestaat_DanTeruggeven()
         {
             //When
             var liturgie = _repository.GetLiturgie(_valideActieveLiturgie.Id.Value);
@@ -41,7 +56,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
         }
 
         [Fact]
-        public void Get_AlsNietBestaat_DanReturnNull()
+        public void GetMetId_AlsNietBestaat_DanReturnNull()
         {
             //Given
             var testId = 7891237;

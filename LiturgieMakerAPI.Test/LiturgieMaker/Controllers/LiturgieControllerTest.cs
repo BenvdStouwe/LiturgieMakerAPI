@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using LiturgieMakerAPI.Data;
@@ -35,8 +36,26 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             _valideActieveLiturgie.Id = 456;
         }
 
+        [Fact(Skip = "IMapper doet nog niet lief")]
+        public void GetAll_AlsBestaat_DanLijstTerug()
+        {
+            //Given
+            var liturgieen = new List<Liturgie>();
+            liturgieen.Add(_valideActieveLiturgie);
+            liturgieen.Add(LiturgieMakerInitializer.BuildLiturgie("Nog een", DateTime.Now.AddDays(5), DateTime.Now.AddDays(6)));
+            var liturgieDtos = liturgieen.Select(l => BuildLiturgieDto(l));
+            MockGetLiturgieen(liturgieen);
+            MockLiturgieMapper(liturgieen, liturgieDtos);
+
+            //When
+            var result = _controller.Get();
+
+            //Then
+            ActionResultTestHelper.AssertOk(result, liturgieDtos);
+        }
+
         [Fact]
-        public void Get_AlsBestaat_DanDtoTerug()
+        public void GetMetId_AlsBestaat_DanDtoTerug()
         {
             // Given
             LiturgieDto dto = BuildLiturgieDto(_valideActieveLiturgie);
@@ -51,7 +70,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
         }
 
         [Fact]
-        public void Get_AlsNietBestaat_DanNotFound()
+        public void GetMetId_AlsNietBestaat_DanNotFound()
         {
             // Given
             MockGetLiturgie(null);
@@ -144,8 +163,23 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
         private void MockLiturgieMapper(Liturgie source, LiturgieDto target)
         {
+            Type targetType = target.GetType();
             _mapperMock.Setup(mock => mock.Map<LiturgieDto>(source))
                 .Returns(target);
+        }
+
+        private void MockLiturgieMapper(IEnumerable<Liturgie> source, IEnumerable<LiturgieDto> target)
+        {
+            Type targetType = target.GetType();
+            _mapperMock.Setup(mock => mock.Map<IEnumerable<LiturgieDto>>(source))
+                .Returns(target);
+        }
+
+        private void MockGetLiturgieen(IEnumerable<Liturgie> liturgieen)
+        {
+            _liturgieRepositoryMock.Setup(mock => mock.GetLiturgieen())
+                .Returns(liturgieen)
+                .Verifiable("Liturgie ophalen");
         }
 
         private void MockGetLiturgie(Liturgie liturgie)
