@@ -90,6 +90,8 @@ namespace LiturgieMakerAPI
                 c.RoutePrefix = "api/swagger";
             });
 
+            app.UseCors("AllowAll");
+
             app.UseMvc();
         }
 
