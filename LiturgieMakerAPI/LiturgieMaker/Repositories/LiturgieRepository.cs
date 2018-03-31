@@ -27,6 +27,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         {
             return _context.Liturgie
                 .WhereActief()
+                .OrderByDescending(l => l.Aanvangsdatum)
                 .ToList();
         }
 
