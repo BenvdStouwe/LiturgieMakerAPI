@@ -31,7 +31,7 @@ namespace LiturgieMakerAPI.Data
             var opwekking = context.Liedbundel.FirstOrDefault(lb => lb.Naam == "Opwekking");
 
             var liturgie = context.Add(BuildLiturgie("Test liturgie", DateTime.Now, DateTime.Now.AddDays(-1))).Entity;
-            var liturgie2 = context.Add(BuildLiturgie("Nog een test liturgie", DateTime.Now, DateTime.Now.AddDays(2))).Entity;
+            var liturgie2 = context.Add(BuildLiturgie("Nog een test liturgie", DateTime.Now.AddDays(7), DateTime.Now.AddDays(2))).Entity;
 
             var item1 = context.Add(BuildLiedItem(liturgie, 0, psalmboek.Liederen.SingleOrDefault(l => l.LiedNummer == 100))).Entity;
             var item2 = context.Add(BuildSchriftlezingItem(liturgie, 1, 5)).Entity;

@@ -12,9 +12,10 @@ using System;
 namespace LiturgieMakerAPI.Migrations
 {
     [DbContext(typeof(LiturgieMakerContext))]
-    partial class LiturgieMakerContextModelSnapshot : ModelSnapshot
+    [Migration("20180402090230_Release-0.1")]
+    partial class Release01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

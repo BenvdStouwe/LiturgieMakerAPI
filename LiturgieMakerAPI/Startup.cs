@@ -5,6 +5,7 @@ using LiturgieMakerAPI.LiturgieMaker.Context;
 using LiturgieMakerAPI.LiturgieMaker.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,7 +59,16 @@ namespace LiturgieMakerAPI
             else
             {
                 // TODO Cors voor prod
-                services.AddCors();
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("AllowProd", builder =>
+                    {
+                        builder.WithOrigins("http://liturgiemaker.benvanderstouwe.nl", "http://liturgiemaker.jolijt.ovh")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
+                });
             }
 
             ConfigureLiedbundels(services);
@@ -82,6 +92,24 @@ namespace LiturgieMakerAPI
                     var context = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
                     LiturgieMakerInitializer.Initialize(context);
                 }
+
+                app.UseCors("AllowAll");
+            }
+            else
+            {
+                // Migrate
+                using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+                {
+                    var context = serviceScope.ServiceProvider.GetRequiredService<LiturgieMakerContext>();
+                    context.Database.Migrate();
+                }
+
+                app.UseForwardedHeaders(new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                });
+
+                app.UseCors("AllowProd");
             }
             app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });
             app.UseSwaggerUI(c =>
@@ -89,8 +117,6 @@ namespace LiturgieMakerAPI
                 c.SwaggerEndpoint("LiturgieMaker/swagger.json", "LiturgieMaker API");
                 c.RoutePrefix = "api/swagger";
             });
-
-            app.UseCors("AllowAll");
 
             app.UseMvc();
         }

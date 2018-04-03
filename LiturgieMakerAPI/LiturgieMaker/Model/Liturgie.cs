@@ -38,6 +38,8 @@ namespace LiturgieMakerAPI.LiturgieMaker.Model
         public DateTime Aanvangsdatum { get; set; }
         [Required]
         public DateTime Publicatiedatum { get; set; }
+        // TODO uitzoeken hoe je met AutoMapper een property kunt ignoren
+        public bool Deleted { get; set; }
         public IEnumerable<LiturgieItemDto> Items { get; set; }
     }
 
