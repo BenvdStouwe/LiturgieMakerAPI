@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LiturgieMakerAPI.Config;
 using LiturgieMakerAPI.Data;
 using LiturgieMakerAPI.Liedbundels.Repositories;
 using LiturgieMakerAPI.LiturgieMaker.Context;
@@ -21,26 +22,31 @@ namespace LiturgieMakerAPI
 
         private readonly IConfiguration Configuration;
         private readonly IHostingEnvironment CurrentEnvironment;
+        private readonly StartupSettings Settings;
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
             CurrentEnvironment = env;
+            Settings = configuration.GetSection("StartupSettings").Get<StartupSettings>();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Register the Swagger generator, defining one or more Swagger documents
-            services.AddSwaggerGen(c =>
+            if (Settings.UseSwagger)
             {
-                c.SwaggerDoc("LiturgieMaker", new Info { Title = "LiturgieMaker API" });
-                // Set the comments path for the Swagger JSON and UI.
-                var basePath = AppContext.BaseDirectory;
-                var xmlPath = Path.Combine(basePath, "LiturgieMakerAPI.xml");
-                c.IncludeXmlComments(xmlPath);
-                c.DescribeAllEnumsAsStrings();
-            });
+                // Register the Swagger generator, defining one or more Swagger documents
+                services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("LiturgieMaker", new Info { Title = "LiturgieMaker API" });
+                    // Set the comments path for the Swagger JSON and UI.
+                    var basePath = AppContext.BaseDirectory;
+                    var xmlPath = Path.Combine(basePath, "LiturgieMakerAPI.xml");
+                    c.IncludeXmlComments(xmlPath);
+                    c.DescribeAllEnumsAsStrings();
+                });
+            }
 
             if (CurrentEnvironment.IsDevelopment())
             {
@@ -58,12 +64,11 @@ namespace LiturgieMakerAPI
             }
             else
             {
-                // TODO Cors voor prod
                 services.AddCors(options =>
                 {
                     options.AddPolicy("AllowProd", builder =>
                     {
-                        builder.WithOrigins("http://liturgiemaker.benvanderstouwe.nl", "http://liturgiemaker.jolijt.ovh")
+                        builder.WithOrigins(Settings.CorsOrigins)
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
@@ -104,19 +109,27 @@ namespace LiturgieMakerAPI
                     context.Database.Migrate();
                 }
 
-                app.UseForwardedHeaders(new ForwardedHeadersOptions
+
+                if (Settings.UseReverseProxyServer)
                 {
-                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-                });
+                    app.UseForwardedHeaders(new ForwardedHeadersOptions
+                    {
+                        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                    });
+                }
 
                 app.UseCors("AllowProd");
             }
-            app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });
-            app.UseSwaggerUI(c =>
+
+            if (Settings.UseSwagger)
             {
-                c.SwaggerEndpoint("LiturgieMaker/swagger.json", "LiturgieMaker API");
-                c.RoutePrefix = "api/swagger";
-            });
+                app.UseSwagger(c => { c.RouteTemplate = "api/swagger/{documentName}/swagger.json"; });
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("LiturgieMaker/swagger.json", "LiturgieMaker API");
+                    c.RoutePrefix = "api/swagger";
+                });
+            }
 
             app.UseMvc();
         }
