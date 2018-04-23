@@ -10,26 +10,17 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
     {
         private readonly LiturgieMakerContext _context;
 
-        public LiturgieRepository(LiturgieMakerContext context)
-        {
-            _context = context;
-        }
+        public LiturgieRepository(LiturgieMakerContext context) => _context = context;
 
-        public virtual Liturgie GetLiturgie(long id)
-        {
-            return _context.Liturgie
+        public virtual Liturgie GetLiturgie(long id) => _context.Liturgie
                 .WhereActief()
                 .Include(l => l.Items)
                 .SingleOrDefault(l => l.Id.Value == id);
-        }
 
-        public virtual IEnumerable<Liturgie> GetLiturgieen()
-        {
-            return _context.Liturgie
+        public virtual IEnumerable<Liturgie> GetLiturgieen() => _context.Liturgie
                 .WhereActief()
                 .OrderByDescending(l => l.Aanvangsdatum)
                 .ToList();
-        }
 
         public Liturgie SaveLiturgie(Liturgie liturgie)
         {

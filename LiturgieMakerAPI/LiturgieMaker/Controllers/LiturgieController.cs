@@ -29,11 +29,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// <returns>Alle liturgieen</returns>
         [ProducesResponseType(typeof(LiturgieDto[]), 200)]
         [HttpGet]
-        public IActionResult Get()
-        {
-            var liturgieen = _liturgieRepository.GetLiturgieen();
-            return Ok(_mapper.Map<IEnumerable<LiturgieDto>>(liturgieen));
-        }
+        public IActionResult Get() => Ok(_mapper.Map<IEnumerable<LiturgieDto>>(_liturgieRepository.GetLiturgieen()));
 
         /// <summary>
         /// Een enkele liturgie ophalen
@@ -78,7 +74,7 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
 
             var liturgie = _liturgieRepository.SaveLiturgie(_mapper.Map<Liturgie>(liturgieDto));
 
-            return CreatedAtAction("Get", new { id = liturgieDto.Id }, _mapper.Map<LiturgieDto>(liturgie));
+            return CreatedAtAction("Get", new { id = liturgie.Id }, _mapper.Map<LiturgieDto>(liturgie));
         }
 
         /// <summary>

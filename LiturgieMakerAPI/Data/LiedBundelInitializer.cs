@@ -39,35 +39,26 @@ Tot in het laatste nageslacht.")).Entity;
             context.SaveChanges();
         }
 
-        private static Liedbundel BuildLiedbundel(string naam, int aantalLiederen)
+        private static Liedbundel BuildLiedbundel(string naam, int aantalLiederen) => new Liedbundel
         {
-            return new Liedbundel
-            {
-                Naam = naam,
-                AantalLiederen = aantalLiederen,
-                Liederen = new List<Lied>()
-            };
-        }
+            Naam = naam,
+            AantalLiederen = aantalLiederen,
+            Liederen = new List<Lied>()
+        };
 
-        private static Lied BuildLied(string naam, int aantalVerzen, int liednummer, Liedbundel liedbundel)
+        private static Lied BuildLied(string naam, int aantalVerzen, int liednummer, Liedbundel liedbundel) => new Lied
         {
-            return new Lied
-            {
-                Naam = naam,
-                AantalVerzen = aantalVerzen,
-                LiedNummer = liednummer,
-                Liedbundel = liedbundel
-            };
-        }
+            Naam = naam,
+            AantalVerzen = aantalVerzen,
+            LiedNummer = liednummer,
+            Liedbundel = liedbundel
+        };
 
-        private static Vers BuildVers(int versNummer, Lied lied, string tekst)
+        private static Vers BuildVers(int versNummer, Lied lied, string tekst) => new Vers
         {
-            return new Vers
-            {
-                VersNummer = versNummer,
-                Lied = lied,
-                Tekst = tekst
-            };
-        }
+            VersNummer = versNummer,
+            Lied = lied,
+            Tekst = tekst
+        };
     }
 }

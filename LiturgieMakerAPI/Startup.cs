@@ -153,8 +153,7 @@ namespace LiturgieMakerAPI
             }
             else
             {
-                var connectionString = Configuration.GetConnectionString(LITURGIEMAKERDBNAME);
-                optionsBuilder.UseMySql(connectionString);
+                optionsBuilder.UseMySql(Configuration.GetConnectionString(LITURGIEMAKERDBNAME));
             }
         }
     }
