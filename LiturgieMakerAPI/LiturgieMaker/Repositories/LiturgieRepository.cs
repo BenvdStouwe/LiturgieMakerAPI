@@ -13,14 +13,20 @@ namespace LiturgieMakerAPI.LiturgieMaker.Repositories
         public LiturgieRepository(LiturgieMakerContext context) => _context = context;
 
         public virtual Liturgie GetLiturgie(long id) => _context.Liturgie
-                .WhereActief()
-                .Include(l => l.Items)
-                .SingleOrDefault(l => l.Id.Value == id);
+            .WhereActief()
+            .Include(l => l.Items)
+            .SingleOrDefault(l => l.Id.Value == id);
 
-        public virtual IEnumerable<Liturgie> GetLiturgieen() => _context.Liturgie
-                .WhereActief()
-                .OrderByDescending(l => l.Aanvangsdatum)
-                .ToList();
+        public virtual IEnumerable<Liturgie> GetLiturgieen(int page, int results) => _context.Liturgie
+            .WhereActief()
+            .OrderByDescending(l => l.Aanvangsdatum)
+            .Skip((page - 1) * results)
+            .Take(results)
+            .ToList();
+
+        public virtual int GetAantalLitugieen() => _context.Liturgie
+            .WhereActief()
+            .Count();
 
         public Liturgie SaveLiturgie(Liturgie liturgie)
         {
