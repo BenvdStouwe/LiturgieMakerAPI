@@ -48,7 +48,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
             MockLiturgieMapper(liturgieen, liturgieDtos);
 
             //When
-            var result = _controller.Get();
+            var result = _controller.Get(1, 10);
 
             //Then
             ActionResultTestHelper.AssertOk(result, liturgieDtos);
@@ -176,7 +176,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
         private void MockGetLiturgieen(IEnumerable<Liturgie> liturgieen)
         {
-            _liturgieRepositoryMock.Setup(mock => mock.GetLiturgieen())
+            _liturgieRepositoryMock.Setup(mock => mock.GetLiturgieen(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(liturgieen)
                 .Verifiable("Liturgie ophalen");
         }

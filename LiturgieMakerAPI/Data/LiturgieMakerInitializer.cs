@@ -39,35 +39,26 @@ namespace LiturgieMakerAPI.Data
             context.SaveChanges();
         }
 
-        public static Liturgie BuildLiturgie(string titel, DateTime aanvangsdatum, DateTime publicatieDatum, bool deleted = false)
+        public static Liturgie BuildLiturgie(string titel, DateTime aanvangsdatum, DateTime publicatieDatum, bool deleted = false) => new Liturgie
         {
-            return new Liturgie
-            {
-                Titel = titel,
-                Aanvangsdatum = aanvangsdatum,
-                Publicatiedatum = publicatieDatum,
-                Deleted = deleted
-            };
-        }
+            Titel = titel,
+            Aanvangsdatum = aanvangsdatum,
+            Publicatiedatum = publicatieDatum,
+            Deleted = deleted
+        };
 
-        public static LiedItem BuildLiedItem(Liturgie liturgie, int index, Lied lied)
+        public static LiedItem BuildLiedItem(Liturgie liturgie, int index, Lied lied) => new LiedItem
         {
-            return new LiedItem
-            {
-                Liturgie = liturgie,
-                Index = index,
-                Lied = lied
-            };
-        }
+            Liturgie = liturgie,
+            Index = index,
+            Lied = lied
+        };
 
-        public static SchriftlezingItem BuildSchriftlezingItem(Liturgie liturgie, int index, int hoofdstuk)
+        public static SchriftlezingItem BuildSchriftlezingItem(Liturgie liturgie, int index, int hoofdstuk) => new SchriftlezingItem
         {
-            return new SchriftlezingItem
-            {
-                Liturgie = liturgie,
-                Index = index,
-                Hoofdstuk = hoofdstuk
-            };
-        }
+            Liturgie = liturgie,
+            Index = index,
+            Hoofdstuk = hoofdstuk
+        };
     }
 }

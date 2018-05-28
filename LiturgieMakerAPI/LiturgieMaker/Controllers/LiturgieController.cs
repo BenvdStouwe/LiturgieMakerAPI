@@ -28,12 +28,16 @@ namespace LiturgieMakerAPI.LiturgieMaker.Controllers
         /// </remarks>
         /// <returns>Alle liturgieen</returns>
         [ProducesResponseType(typeof(LiturgieDto[]), 200)]
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var liturgieen = _liturgieRepository.GetLiturgieen();
-            return Ok(_mapper.Map<IEnumerable<LiturgieDto>>(liturgieen));
-        }
+        [HttpGet("{page}/{results}")]
+        public IActionResult Get([FromRoute] int page, [FromRoute] int results) => Ok(_mapper.Map<IEnumerable<LiturgieDto>>(_liturgieRepository.GetLiturgieen(page, results)));
+
+        /// <summary>
+        /// Aantal liturgieen van deze gebruiker ophalen
+        /// </summary>
+        /// <returns>Aantal liturgieen</returns>
+        [ProducesResponseType(typeof(int), 200)]
+        [HttpGet("aantal")]
+        public IActionResult GetAantal() => Ok(_liturgieRepository.GetAantalLitugieen());
 
         /// <summary>
         /// Een enkele liturgie ophalen

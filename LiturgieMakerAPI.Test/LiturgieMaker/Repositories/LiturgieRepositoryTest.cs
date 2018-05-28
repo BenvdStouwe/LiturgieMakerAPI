@@ -36,7 +36,7 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
             _repository.SaveLiturgie(verwijderdeLiturgie);
 
             //When
-            var result = _repository.GetLiturgieen();
+            var result = _repository.GetLiturgieen(1, 10);
 
             //Then
             Assert.Single(result);
