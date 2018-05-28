@@ -14,27 +14,25 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
         LiturgieMakerContext _context;
         LiturgieRepository _repository;
 
-        Liturgie _valideActieveLiturgie;
-
         public LiturgieRepositoryTest()
         {
             _context = new LiturgieMakerContext(new DbContextOptionsBuilder<LiturgieMakerContext>().UseInMemoryDatabase("LiturgieMaker").Options);
             _repository = new LiturgieRepository(_context);
-
-            SetupLiturgie();
         }
 
-        private void SetupLiturgie()
+        private Liturgie SetupLiturgie()
         {
-            _valideActieveLiturgie = LiturgieMakerInitializer.BuildLiturgie("Test", DateTime.Now, DateTime.Now, false);
-            _repository.SaveLiturgie(_valideActieveLiturgie);
+            var liturgie = LiturgieMakerInitializer.BuildLiturgie("Test", DateTime.Now, DateTime.Now, false);
+            _repository.SaveLiturgie(liturgie);
+            return liturgie;
         }
 
         [Fact]
         public void GetAlles_AlsErDeletedZijn_DanNegeren()
         {
             //Given
-            var verwijderdeLiturgie = LiturgieMakerInitializer.BuildLiturgie("Verwijderd", DateTime.Now.AddMonths(-1), DateTime.Now.AddMonths(-1), true);
+            var liturgie = SetupLiturgie();
+            var verwijderdeLiturgie = LiturgieMakerInitializer.BuildLiturgie("Verwijderd", DateTime.Now.AddMonths(-1), DateTime.Now.AddMonths(-1), deleted: true);
             _repository.SaveLiturgie(verwijderdeLiturgie);
 
             //When
@@ -42,17 +40,20 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
 
             //Then
             Assert.Single(result);
-            Assert.Equal(_valideActieveLiturgie.Id.Value, result.First().Id.Value);
+            Assert.Equal(liturgie.Id.Value, result.First().Id.Value);
         }
 
         [Fact]
         public void GetMetId_AlsBestaat_DanTeruggeven()
         {
+            //Given 
+            var liturgie = SetupLiturgie();
+
             //When
-            var liturgie = _repository.GetLiturgie(_valideActieveLiturgie.Id.Value);
+            var liturgieUitDb = _repository.GetLiturgie(liturgie.Id.Value);
 
             //Then`
-            AssertEqualLiturige(_valideActieveLiturgie, liturgie);
+            AssertEqualLiturige(liturgie, liturgieUitDb);
         }
 
         [Fact]
@@ -71,12 +72,15 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Repositories
         [Fact]
         public void Delete_AlsAllesGoed_DanLiturgieOpDeleted()
         {
+            //Given
+            var liturgie = SetupLiturgie();
+
             //When
-            _repository.DeleteLiturgie(_valideActieveLiturgie);
+            _repository.DeleteLiturgie(liturgie);
 
             //Then
-            var liturgie = _context.Liturgie.Where(l => l.Id == _valideActieveLiturgie.Id.Value).SingleOrDefault();
-            Assert.True(liturgie.Deleted);
+            var liturgieUitDb = _context.Liturgie.Where(l => l.Id == liturgie.Id.Value).SingleOrDefault();
+            Assert.True(liturgieUitDb.Deleted);
         }
 
         private void AssertEqualLiturige(Liturgie expected, Liturgie actually)

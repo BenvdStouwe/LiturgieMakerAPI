@@ -163,7 +163,6 @@ namespace LiturgieMakerAPI.Test.LiturgieMaker.Controllers
 
         private void MockLiturgieMapper(Liturgie source, LiturgieDto target)
         {
-            Type targetType = target.GetType();
             _mapperMock.Setup(mock => mock.Map<LiturgieDto>(source))
                 .Returns(target);
         }
